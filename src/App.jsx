@@ -13,7 +13,7 @@
  */
 
 import React from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import { ThemeProvider } from './context/ThemeContext';
 import { CartProvider } from './context/CartContext';

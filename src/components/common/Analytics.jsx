@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+// import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
 
 // Simple analytics hook for tracking page views and user interactions
 export const useAnalytics = () => {
