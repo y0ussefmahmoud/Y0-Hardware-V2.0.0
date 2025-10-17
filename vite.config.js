@@ -7,6 +7,14 @@ export default defineConfig({
   base: '/Y0-Hardware-V2.0.0/',
   build: {
     outDir: 'dist',
-    assetsDir: 'assets'
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
+  },
+  server: {
+    port: 3000
   }
 })
