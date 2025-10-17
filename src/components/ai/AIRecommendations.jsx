@@ -11,7 +11,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { FaRobot, FaBrain, FaLightbulb, FaChartLine } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
@@ -46,7 +46,7 @@ const AIContainer = styled(Card)`
       ${({ theme }) => theme.colors.primary}, 
       ${({ theme }) => theme.colors.secondary}
     );
-    animation: ${shimmer} 2s infinite;
+    ${css`animation: ${shimmer} 2s infinite;`}
   }
 `;
 
@@ -70,7 +70,7 @@ const AIIcon = styled.div`
   justify-content: center;
   color: white;
   font-size: 24px;
-  animation: pulse 2s infinite;
+  ${css`animation: pulse 2s infinite;`}
   
   @keyframes pulse {
     0%, 100% { transform: scale(1); }
@@ -128,6 +128,15 @@ const RecommendationsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: ${({ theme }) => theme.spacing.lg};
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: ${({ theme }) => theme.spacing.md};
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const AIInsight = styled.div`

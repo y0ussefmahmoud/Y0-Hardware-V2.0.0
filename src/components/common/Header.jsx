@@ -101,6 +101,7 @@ const HeaderActions = styled.div`
   gap: ${({ theme }) => theme.spacing.md};
 `;
 
+
 const SearchBox = styled.div`
   position: relative;
   display: flex;
@@ -287,11 +288,11 @@ const MobileNavLink = styled(Link)`
 `;
 
 const Header = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const { isDarkMode, toggleTheme } = useTheme();
   const { totalItems } = useCart();
-  const { totalItems: wishlistItems } = useWishlist();
+  const { items: wishlistItems } = useWishlist();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
 
   const navItems = [
@@ -306,6 +307,12 @@ const Header = () => {
     if (searchQuery.trim()) {
       // Navigate to search results page with query parameter
       window.location.href = `/shop?search=${encodeURIComponent(searchQuery)}`;
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch(e);
     }
   };
 

@@ -12,7 +12,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { 
   FaSearch, 
   FaBrain, 
@@ -35,6 +35,10 @@ const SmartSearchContainer = styled.div`
   position: relative;
   width: 100%;
   max-width: 600px;
+  
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `;
 
 const SearchInputContainer = styled.div`
@@ -49,7 +53,7 @@ const SearchInputContainer = styled.div`
   transition: all ${({ theme }) => theme.transitions.normal};
   overflow: hidden;
   
-  ${({ aiActive }) => aiActive && `animation: ${glow} 2s infinite;`}
+  ${({ aiActive }) => aiActive && css`animation: ${glow} 2s infinite;`}
   
   &:hover {
     border-color: ${({ theme }) => theme.colors.primary};
@@ -73,7 +77,7 @@ const AIIndicator = styled.div`
   font-weight: ${({ theme }) => theme.fonts.weights.medium};
   
   svg {
-    animation: ${({ active }) => active ? 'pulse 1.5s infinite' : 'none'};
+    ${({ active }) => active && css`animation: pulse 1.5s infinite;`}
   }
   
   @keyframes pulse {

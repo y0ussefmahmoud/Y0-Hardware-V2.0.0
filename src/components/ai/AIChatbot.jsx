@@ -12,7 +12,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { 
   FaRobot, 
   FaPaperPlane, 
@@ -88,7 +88,7 @@ const ChatWindow = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: ${slideUp} 0.3s ease-out;
+  ${css`animation: ${slideUp} 0.3s ease-out;`}
   border: 1px solid ${({ theme }) => theme.colors.border.primary};
   
   @media (max-width: 768px) {
@@ -213,7 +213,7 @@ const MessageBubble = styled.div`
   };
   font-size: ${({ theme }) => theme.fonts.sizes.sm};
   line-height: 1.4;
-  animation: ${slideUp} 0.3s ease-out;
+  ${css`animation: ${slideUp} 0.3s ease-out;`}
 `;
 
 const TypingIndicator = styled.div`
@@ -227,7 +227,7 @@ const TypingIndicator = styled.div`
     height: 8px;
     border-radius: 50%;
     background: ${({ theme }) => theme.colors.text.secondary};
-    animation: ${typing} 1.4s infinite;
+    ${css`animation: ${typing} 1.4s infinite;`}
     
     &:nth-child(2) { animation-delay: 0.2s; }
     &:nth-child(3) { animation-delay: 0.4s; }

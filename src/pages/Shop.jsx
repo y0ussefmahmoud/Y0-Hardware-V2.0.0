@@ -156,8 +156,25 @@ const FilterLabel = styled.label`
   }
 `;
 
-const FilterCheckbox = styled.input`
-  accent-color: ${({ theme }) => theme.colors.primary};
+const FilterCheckbox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.sm} 0;
+  cursor: pointer;
+  
+  input {
+    accent-color: ${({ theme }) => theme.colors.primary};
+  }
+  
+  span {
+    color: ${({ theme }) => theme.colors.text.secondary};
+    transition: color ${({ theme }) => theme.transitions.fast};
+  }
+  
+  &:hover span {
+    color: ${({ theme }) => theme.colors.text.primary};
+  }
 `;
 
 const FilterSelect = styled.select`
