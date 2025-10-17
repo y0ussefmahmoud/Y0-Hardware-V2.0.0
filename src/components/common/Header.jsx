@@ -6,7 +6,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import Button from './Button';
-import AdvancedSearch from './AdvancedSearch';
+import AISmartSearch from '../ai/AISmartSearch';
 
 const HeaderContainer = styled.header`
   background: ${({ theme }) => theme.colors.background.card};
@@ -337,7 +337,7 @@ const Header = () => {
         </Navigation>
 
         <HeaderActions>
-          <AdvancedSearch placeholder="ابحث عن المنتجات..." />
+          <AISmartSearch placeholder="ابحث بذكاء... جرب 'أريد جهاز ألعاب بميزانية 20000'" />
 
           <CartButton as={Link} to="/wishlist">
             <FaHeart />

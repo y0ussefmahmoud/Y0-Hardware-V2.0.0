@@ -6,6 +6,8 @@ import { FaArrowLeft, FaShippingFast, FaShieldAlt, FaHeadset, FaTrophy } from 'r
 import { productsDatabase } from '../data/products';
 import ProductCard from '../components/product/ProductCard';
 import Button from '../components/common/Button';
+import AIRecommendations from '../components/ai/AIRecommendations';
+import AIChatbot from '../components/ai/AIChatbot';
 import Card from '../components/common/Card';
 
 const HomeContainer = styled.div`
@@ -353,6 +355,12 @@ const Home = () => {
           ))}
         </CategoriesGrid>
       </Section>
+
+      {/* AI Recommendations Section */}
+      <AIRecommendations />
+
+      {/* AI Chatbot */}
+      <AIChatbot />
     </HomeContainer>
     </>
   );

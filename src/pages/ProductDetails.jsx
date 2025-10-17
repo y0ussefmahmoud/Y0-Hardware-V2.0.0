@@ -23,6 +23,7 @@ import Button from '../components/common/Button';
 import Card from '../components/common/Card';
 import ProductCard from '../components/product/ProductCard';
 import ReviewList from '../components/product/ReviewList';
+import AIRecommendations from '../components/ai/AIRecommendations';
 
 const ProductContainer = styled.div`
   max-width: 1200px;
@@ -628,6 +629,9 @@ const ProductDetails = () => {
           ))}
         </SpecTable>
       </SpecificationsCard>
+
+      {/* AI Recommendations */}
+      <AIRecommendations currentProduct={product} />
 
       {relatedProducts.length > 0 && (
         <RelatedProducts>
