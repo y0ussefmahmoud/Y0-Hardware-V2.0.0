@@ -6,17 +6,7 @@ export default defineConfig({
   base: '/Y0-Hardware-V2.0.0/',
   build: {
     outDir: 'dist',
-    sourcemap: false,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          styled: ['styled-components'],
-          icons: ['react-icons']
-        }
-      }
-    }
+    sourcemap: false
   },
   server: {
     port: 3000,
