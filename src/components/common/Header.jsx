@@ -34,7 +34,7 @@ const HeaderContent = styled.div`
   }
 `;
 
-const Logo = styled(Link)`
+const Logo = styled.a`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
