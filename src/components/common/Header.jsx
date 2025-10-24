@@ -7,6 +7,7 @@ import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import Button from './Button';
 import AISmartSearch from '../ai/AISmartSearch';
+import { useNavigate } from 'react-router-dom';
 
 const HeaderContainer = styled.header`
   background: ${({ theme }) => theme.colors.background.card};
@@ -294,6 +295,7 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navItems = [
     { path: '/', label: 'الرئيسية' },
@@ -306,7 +308,7 @@ const Header = () => {
     e.preventDefault();
     if (searchQuery.trim()) {
       // Navigate to search results page with query parameter
-      window.location.href = `/shop?search=${encodeURIComponent(searchQuery)}`;
+      navigate(`/shop?search=${encodeURIComponent(searchQuery)}`);
     }
   };
 

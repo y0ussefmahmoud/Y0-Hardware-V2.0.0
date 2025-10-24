@@ -15,6 +15,15 @@
     
     <!-- GitHub Pages optimization -->
     <script>
+      // GitHub Pages SPA redirect handling
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect != location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+      
       // Prevent FOUC (Flash of Unstyled Content)
       document.documentElement.style.visibility = 'hidden';
       window.addEventListener('DOMContentLoaded', function() {
