@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { ProductSEO } from '../components/common/SEO';
 import styled from 'styled-components';
+import { createLink, navigateTo } from '../utils/router';
 import { 
   FaStar, 
   FaHeart, 
@@ -18,7 +20,6 @@ import { productsDatabase, reviewsDatabase } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { useNotification } from '../context/NotificationContext';
 import { useWishlist } from '../context/WishlistContext';
-import { ProductSEO } from '../components/common/SEO';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
 import ProductCard from '../components/product/ProductCard';
@@ -407,9 +408,9 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (!product) {
-      navigate('/shop');
+      navigateTo('/shop');
     }
-  }, [product, navigate]);
+  }, [product]);
 
   if (!product) {
     return null;
@@ -498,9 +499,9 @@ const ProductDetails = () => {
       <ProductSEO product={product} />
       <ProductContainer>
       <Breadcrumb>
-        <Link to="/">الرئيسية</Link>
+        <a href={createLink('/')}>الرئيسية</a>
         <span>/</span>
-        <Link to="/shop">المنتجات</Link>
+        <a href={createLink('/shop')}>المنتجات</a>
         <span>/</span>
         <span>{product.name}</span>
       </Breadcrumb>

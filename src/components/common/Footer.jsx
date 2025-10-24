@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { createLink } from '../../utils/router';
 import { 
   FaMicrochip, 
   FaFacebook, 
@@ -200,11 +201,11 @@ const Footer = () => {
           <FooterSection>
             <FooterTitle>روابط سريعة</FooterTitle>
             <FooterList>
-              <li><FooterLink to="/">الرئيسية</FooterLink></li>
-              <li><FooterLink to="/shop">المنتجات</FooterLink></li>
-              <li><FooterLink to="/about">من نحن</FooterLink></li>
-              <li><FooterLink to="/contact">تواصل معنا</FooterLink></li>
-              <li><FooterLink to="/cart">سلة التسوق</FooterLink></li>
+              <li><FooterLink as="a" href={createLink('/')}>الرئيسية</FooterLink></li>
+              <li><FooterLink as="a" href={createLink('/shop')}>المنتجات</FooterLink></li>
+              <li><FooterLink as="a" href={createLink('/about')}>من نحن</FooterLink></li>
+              <li><FooterLink as="a" href={createLink('/contact')}>تواصل معنا</FooterLink></li>
+              <li><FooterLink as="a" href={createLink('/cart')}>سلة التسوق</FooterLink></li>
             </FooterList>
           </FooterSection>
 
@@ -212,11 +213,11 @@ const Footer = () => {
           <FooterSection>
             <FooterTitle>الفئات</FooterTitle>
             <FooterList>
-              <li><FooterLink to="/shop?category=pc-parts">قطع الكمبيوتر</FooterLink></li>
-              <li><FooterLink to="/shop?category=laptops">اللابتوب</FooterLink></li>
-              <li><FooterLink to="/shop?category=accessories">الاكسسوارات</FooterLink></li>
-              <li><FooterLink to="/shop?category=gaming">ألعاب</FooterLink></li>
-              <li><FooterLink to="/shop?deals=true">العروض الخاصة</FooterLink></li>
+              <li><FooterLink as="a" href={createLink('/shop?category=pc-parts')}>قطع الكمبيوتر</FooterLink></li>
+              <li><FooterLink as="a" href={createLink('/shop?category=laptops')}>اللابتوب</FooterLink></li>
+              <li><FooterLink as="a" href={createLink('/shop?category=accessories')}>الاكسسوارات</FooterLink></li>
+              <li><FooterLink as="a" href={createLink('/shop?category=gaming')}>ألعاب</FooterLink></li>
+              <li><FooterLink as="a" href={createLink('/shop?deals=true')}>العروض الخاصة</FooterLink></li>
             </FooterList>
           </FooterSection>
 

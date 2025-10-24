@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { createLink } from '../utils/router';
 import { 
   FaHeart, 
   FaShoppingCart, 
@@ -373,7 +374,7 @@ const Wishlist = () => {
           <FaHeart />
           <h2>قائمة المفضلة فارغة</h2>
           <p>لم تقم بإضافة أي منتجات إلى قائمة المفضلة بعد</p>
-          <Button as={Link} to="/shop" variant="primary" size="lg">
+          <Button as="a" href={createLink('/shop')} variant="primary" size="lg">
             تسوق الآن
             <FaArrowLeft />
           </Button>
@@ -482,8 +483,8 @@ const Wishlist = () => {
                   إضافة للسلة
                 </Button>
                 <Button
-                  as={Link}
-                  to={`/product/${item.id}`}
+                  as="a"
+                  href={createLink(`/product/${item.id}`)}
                   variant="secondary"
                   size="sm"
                   style={{ flex: 1 }}

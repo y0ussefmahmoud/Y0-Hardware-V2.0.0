@@ -8,6 +8,7 @@ import { useWishlist } from '../../context/WishlistContext';
 import Button from './Button';
 import AISmartSearch from '../ai/AISmartSearch';
 import { useNavigate } from 'react-router-dom';
+import { createLink, navigateTo } from '../../utils/router';
 
 const HeaderContainer = styled.header`
   background: ${({ theme }) => theme.colors.background.card};
@@ -325,7 +326,7 @@ const Header = () => {
   return (
     <HeaderContainer>
       <HeaderContent>
-        <Logo to="/">
+        <Logo as="a" href={createLink('/')}>
           <FaMicrochip />
           Y0 Hardware
         </Logo>
@@ -335,7 +336,8 @@ const Header = () => {
             {navItems.map((item) => (
               <NavItem key={item.path}>
                 <NavLink 
-                  to={item.path}
+                  as="a"
+                  href={createLink(item.path)}
                   className={location.pathname === item.path ? 'active' : ''}
                 >
                   {item.label}
@@ -348,12 +350,12 @@ const Header = () => {
         <HeaderActions>
           <AISmartSearch placeholder="ابحث بذكاء... جرب 'أريد جهاز ألعاب بميزانية 20000'" />
 
-          <CartButton as={Link} to="/wishlist">
+          <CartButton as="a" href={createLink('/wishlist')}>
             <FaHeart />
-            {wishlistItems > 0 && <CartCount>{wishlistItems}</CartCount>}
+            {wishlistItems.length > 0 && <CartCount>{wishlistItems.length}</CartCount>}
           </CartButton>
 
-          <CartButton as={Link} to="/cart">
+          <CartButton as="a" href={createLink('/cart')}>
             <FaShoppingCart />
             {totalItems > 0 && <CartCount>{totalItems}</CartCount>}
           </CartButton>
@@ -373,7 +375,8 @@ const Header = () => {
           {navItems.map((item) => (
             <li key={item.path}>
               <MobileNavLink 
-                to={item.path}
+                as="a"
+                href={createLink(item.path)}
                 className={location.pathname === item.path ? 'active' : ''}
                 onClick={() => setIsMobileMenuOpen(false)}
               >

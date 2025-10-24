@@ -9,6 +9,7 @@ import Button from '../components/common/Button';
 import AIRecommendations from '../components/ai/AIRecommendations';
 import AIChatbot from '../components/ai/AIChatbot';
 import Card from '../components/common/Card';
+import { createLink } from '../utils/router';
 
 const HomeContainer = styled.div`
   min-height: calc(100vh - 160px);
@@ -270,11 +271,11 @@ const Home = () => {
               نوفر لك أحدث التقنيات بأسعار تنافسية مع ضمان شامل وخدمة عملاء متميزة.
             </HeroDescription>
             <HeroButtons>
-              <Button as={Link} to="/shop" variant="primary" size="lg">
+              <Button as="a" href={createLink('/shop')} variant="primary" size="lg">
                 تسوق الآن
                 <FaArrowLeft />
               </Button>
-              <Button as={Link} to="/shop?deals=true" variant="secondary" size="lg">
+              <Button as="a" href={createLink('/shop?deals=true')} variant="secondary" size="lg">
                 العروض الخاصة
               </Button>
             </HeroButtons>
@@ -316,7 +317,7 @@ const Home = () => {
           ))}
         </ProductsGrid>
         <ViewAllButton>
-          <Button as={Link} to="/shop" variant="primary" size="lg">
+          <Button as="a" href={createLink('/shop')} variant="primary" size="lg">
             عرض جميع المنتجات
             <FaArrowLeft />
           </Button>
@@ -335,7 +336,7 @@ const Home = () => {
           ))}
         </ProductsGrid>
         <ViewAllButton>
-          <Button as={Link} to="/shop?category=used" variant="secondary" size="lg">
+          <Button as="a" href={createLink('/shop?category=used')} variant="secondary" size="lg">
             عرض جميع المنتجات المستعملة
             <FaArrowLeft />
           </Button>
@@ -347,7 +348,7 @@ const Home = () => {
         <SectionTitle>تسوق حسب الفئة</SectionTitle>
         <CategoriesGrid>
           {categories.map((category, index) => (
-            <CategoryCard key={index} as={Link} to={category.link} hoverable>
+            <CategoryCard key={index} as="a" href={createLink(category.link)} hoverable>
               <CategoryIcon>{category.icon}</CategoryIcon>
               <CategoryTitle>{category.title}</CategoryTitle>
               <CategoryDescription>{category.description}</CategoryDescription>

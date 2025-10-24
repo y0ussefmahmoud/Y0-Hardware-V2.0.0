@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import { createLink } from '../../utils/router';
 import { FaStar, FaHeart, FaShoppingCart, FaEye } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
 import { useNotification } from '../../context/NotificationContext';
@@ -268,7 +269,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <ProductCardContainer as={Link} to={`/product/${product.id}`} hoverable>
+    <ProductCardContainer as="a" href={createLink(`/product/${product.id}`)} hoverable>
       <ProductImage src={product.image}>
         {product.badge && (
           <ProductBadge type={product.badge}>
@@ -283,7 +284,7 @@ const ProductCard = ({ product }) => {
           <ActionButton onClick={handleToggleFavorite} title="إضافة للمفضلة">
             <FaHeart style={{ color: isInWishlist(product.id) ? '#ff4757' : undefined }} />
           </ActionButton>
-          <ActionButton as={Link} to={`/product/${product.id}`} title="عرض التفاصيل">
+          <ActionButton as="a" href={createLink(`/product/${product.id}`)} title="عرض التفاصيل">
             <FaEye />
           </ActionButton>
         </ProductActions>

@@ -12,21 +12,29 @@ export const getBasePath = () => {
   return isGitHubPages() ? '/Y0-Hardware-V2.0.0' : '';
 };
 
-// Create proper links for GitHub Pages
+// Create proper links for GitHub Pages with full path
 export const createLink = (path) => {
   if (isGitHubPages()) {
-    // For GitHub Pages, use hash routing
-    return `#${path}`;
+    // For GitHub Pages, use full path with hash routing
+    return `/Y0-Hardware-V2.0.0/#${path}`;
   }
-  // For local development, use normal paths
-  return path;
+  // For local development, use hash routing
+  return `#${path}`;
+};
+
+// Create absolute URL for GitHub Pages
+export const createAbsoluteLink = (path) => {
+  if (isGitHubPages()) {
+    return `https://y0ussefmahmoud.github.io/Y0-Hardware-V2.0.0/#${path}`;
+  }
+  return `${window.location.origin}/#${path}`;
 };
 
 // Navigate programmatically
 export const navigateTo = (path) => {
   if (isGitHubPages()) {
-    window.location.hash = path;
+    window.location.href = `/Y0-Hardware-V2.0.0/#${path}`;
   } else {
-    window.history.pushState({}, '', path);
+    window.location.hash = path;
   }
 };

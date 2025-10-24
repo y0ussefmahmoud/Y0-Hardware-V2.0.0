@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { CartSEO } from '../components/common/SEO';
 import styled from 'styled-components';
+import { createLink } from '../utils/router';
 import { FaTrash, FaPlus, FaMinus, FaShoppingBag, FaArrowLeft } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import Button from '../components/common/Button';
@@ -289,7 +291,7 @@ const Cart = () => {
           <FaShoppingBag />
           <h2>سلة التسوق فارغة</h2>
           <p>لم تقم بإضافة أي منتجات إلى سلة التسوق بعد</p>
-          <Button as={Link} to="/shop" variant="primary" size="lg">
+          <Button as="a" href={createLink('/shop')} variant="primary" size="lg">
             تسوق الآن
             <FaArrowLeft />
           </Button>
