@@ -1,3 +1,12 @@
+/**
+ * Home Page - الصفحة الرئيسية
+ * --------------------------------------------------------------
+ * Purpose (الغرض): Act as the landing experience with hero, features,
+ * curated product rows, categories, and AI sections for discovery.
+ * Sections (الأقسام): Hero, Features, Best Sellers, Featured Products,
+ * Used Products, Categories, AI Recommendations, AI Chatbot.
+ * SEO: Injects meta tags through `HomeSEO`.
+ */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HomeSEO } from '../components/common/SEO';
@@ -15,6 +24,8 @@ const HomeContainer = styled.div`
   min-height: calc(100vh - 160px);
 `;
 
+// HeroSection: Gradient backdrop with generous padding for the hero
+// قسم البطل مع خلفية متدرجة ومساحات واسعة
 const HeroSection = styled.section`
   background: linear-gradient(
     135deg,
@@ -25,6 +36,8 @@ const HeroSection = styled.section`
   margin-bottom: ${({ theme }) => theme.spacing['3xl']};
 `;
 
+// HeroContent: Two-column grid collapsing to single column on mobile
+// محتوى البطل يستخدم شبكتين تتحول إلى عمود واحد على الشاشات الصغيرة
 const HeroContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
@@ -73,6 +86,8 @@ const HeroDescription = styled.p`
   margin-bottom: ${({ theme }) => theme.spacing.xl};
 `;
 
+// HeroButtons: Flex wrapper that stacks buttons vertically on phones
+// حاوية أزرار تتكدس عمودياً على الهواتف
 const HeroButtons = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
@@ -82,6 +97,8 @@ const HeroButtons = styled.div`
   }
 `;
 
+// HeroImage: Placeholder Unsplash image until CMS/gallery integration
+// صورة خلفية مؤقتة من Unsplash لحين ربطها بوسائط حقيقية
 const HeroImage = styled.div`
   width: 100%;
   height: 400px;
@@ -96,6 +113,8 @@ const HeroImage = styled.div`
   }
 `;
 
+// Section: Shared wrapper for each content block (max-width + padding)
+// غلاف مشترك لكل قسم بمساحة داخلية وعرض ثابت
 const Section = styled.section`
   max-width: 1200px;
   margin: 0 auto;
@@ -121,6 +140,8 @@ const SectionDescription = styled.p`
   margin-right: auto;
 `;
 
+// FeaturesGrid: Auto-fit layout for service highlights
+// شبكة تلقائية لعرض مميزات الخدمة
 const FeaturesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -133,6 +154,8 @@ const FeatureCard = styled(Card)`
   padding: ${({ theme }) => theme.spacing.xl};
 `;
 
+// FeatureIcon: Circular gradient backdrop to host each icon
+// أيقونة داخل دائرة متدرجة تضيف جاذبية بصرية
 const FeatureIcon = styled.div`
   width: 80px;
   height: 80px;
@@ -207,11 +230,21 @@ const CategoryDescription = styled.p`
 `;
 
 const Home = () => {
+  // featuredProducts: Highlight newly tagged items (badge === 'new') limited to 4
+  // المنتجات المميزة: يتم اختيار أول أربعة عناصر بعلامة "جديد"
   const featuredProducts = productsDatabase.filter(product => product.badge === 'new').slice(0, 4);
+  // bestSellers: Filters for bestseller badge to showcase top-performing SKUs
+  // الأكثر مبيعاً: المنتجات ذات شارة 'bestseller'
   const bestSellers = productsDatabase.filter(product => product.badge === 'bestseller').slice(0, 4);
+  // saleProducts: Captures products with an oldPrice to spotlight discounts
+  // منتجات التخفيضات: أي عنصر لديه سعر قديم، مما يدل على وجود خصم
   const saleProducts = productsDatabase.filter(product => product.oldPrice).slice(0, 4);
+  // usedProducts: Focus on refurbished/used inventory (category === 'used')
+  // منتجات مستعملة: فلترة الفئة 'used' وإظهار أربعة فقط
   const usedProducts = productsDatabase.filter(product => product.category === 'used').slice(0, 4);
 
+  // features array: Defines service benefits (icon, title, description)
+  // مصفوفة المزايا تحتوي على رمز وعنوان ووصف لكل ميزة
   const features = [
     {
       icon: <FaShippingFast />,
@@ -235,6 +268,8 @@ const Home = () => {
     }
   ];
 
+  // categories array: Maps category cards to router links with emojis for now
+  // مصفوفة الفئات: تحدد كل فئة ورابطها باستخدام createLink لاحقاً
   const categories = [
     {
       title: 'قطع الكمبيوتر',
@@ -271,6 +306,8 @@ const Home = () => {
               نوفر لك أحدث التقنيات بأسعار تنافسية مع ضمان شامل وخدمة عملاء متميزة.
             </HeroDescription>
             <HeroButtons>
+              {/* createLink ensures correct base path for static hosting */}
+              {/* createLink يضمن سلامة الروابط مع الاستضافة الثابتة */}
               <Button as="a" href={createLink('/shop')} variant="primary" size="lg">
                 تسوق الآن
                 <FaArrowLeft />
@@ -357,10 +394,12 @@ const Home = () => {
         </CategoriesGrid>
       </Section>
 
-      {/* AI Recommendations Section */}
+      {/* AI Recommendations Section - Integrates ML-powered product suggestions */}
+      {/* قسم التوصيات المدعوم بالذكاء الاصطناعي */}
       <AIRecommendations />
 
-      {/* AI Chatbot */}
+      {/* AI Chatbot - Conversational helper for quick support */}
+      {/* روبوت المحادثة لتقديم الدعم الفوري */}
       <AIChatbot />
     </HomeContainer>
     </>

@@ -1,6 +1,14 @@
+/**
+ * Card Component - بطاقة قابلة لإعادة الاستخدام
+ * --------------------------------------------------------------
+ * Purpose (الغرض): Provide a flexible container with optional hover,
+ * padding variants, and compound subcomponents (Header/Body/etc.).
+ */
 import React from 'react';
 import styled, { css } from 'styled-components';
 
+// StyledCard: Base wrapper with border, shadow, and optional hover effect
+// الحاوية الأساسية للبطاقة مع ظل وحدود وخيار التفاعل عند التحويم
 const StyledCard = styled.div`
   background: ${({ theme }) => theme.colors.background.card};
   border: 1px solid ${({ theme }) => theme.colors.border.primary};
@@ -35,6 +43,8 @@ const StyledCard = styled.div`
   }}
 `;
 
+// CardHeader: Optional border separator for header content
+// رأس البطاقة مع إمكانية إزالة الحد السفلي
 const CardHeader = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border.primary};
@@ -44,6 +54,8 @@ const CardHeader = styled.div`
   `}
 `;
 
+// CardTitle: Primary heading style for cards
+// عنوان البطاقة بخط واضح
 const CardTitle = styled.h3`
   margin: 0;
   font-size: ${({ theme }) => theme.fonts.sizes.xl};
@@ -51,12 +63,16 @@ const CardTitle = styled.h3`
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
+// CardSubtitle: Secondary text under the title
+// وصف فرعي يُظهر تفاصيل إضافية
 const CardSubtitle = styled.p`
   margin: ${({ theme }) => theme.spacing.xs} 0 0 0;
   font-size: ${({ theme }) => theme.fonts.sizes.sm};
   color: ${({ theme }) => theme.colors.text.secondary};
 `;
 
+// CardBody: Main content area with optional padding removal
+// جسم البطاقة مع خيار إزالة الحشو
 const CardBody = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
   
@@ -65,6 +81,8 @@ const CardBody = styled.div`
   `}
 `;
 
+// CardFooter: Footer section with subtle background + divider
+// تذييل البطاقة بخلفية خفيفة وحد علوي
 const CardFooter = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
   border-top: 1px solid ${({ theme }) => theme.colors.border.primary};
@@ -76,6 +94,8 @@ const CardFooter = styled.div`
   `}
 `;
 
+// CardImage: Background-image helper with optional inner rounding
+// صورة البطاقة مع دعم جعل الزوايا دائرية داخلياً
 const CardImage = styled.div`
   width: 100%;
   height: ${({ height }) => height || '200px'};
@@ -91,6 +111,14 @@ const CardImage = styled.div`
   `}
 `;
 
+/**
+ * Card Component
+ *
+ * @param {React.ReactNode} children - محتوى البطاقة
+ * @param {boolean} [hoverable=false] - تفعيل تأثير التحويم
+ * @param {string} [padding='md'] - حجم الحشو (none/sm/md/lg)
+ * @param {Function} [onClick] - حدث النقر الاختياري
+ */
 const Card = ({ 
   children, 
   hoverable = false, 
@@ -112,7 +140,7 @@ const Card = ({
   );
 };
 
-// Compound components
+// Compound components pattern: allows usage مثل Card.Header داخل البطاقة
 Card.Header = CardHeader;
 Card.Title = CardTitle;
 Card.Subtitle = CardSubtitle;

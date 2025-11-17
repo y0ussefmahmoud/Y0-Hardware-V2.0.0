@@ -1,3 +1,12 @@
+/**
+ * Header Component - شريط التنقل الرئيسي للموقع
+ * ------------------------------------------------------------------
+ * Purpose (الغرض): Provides persistent navigation with smart search,
+ * cart/wishlist indicators, and theme toggle across all pages.
+ * Highlights (المميزات): Sticky responsive layout, mobile menu,
+ * AI-powered search entry point, and GitHub Pages-friendly links.
+ * Usage (الاستخدام): Rendered once inside `App.jsx` to wrap every page.
+ */
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -10,6 +19,8 @@ import AISmartSearch from '../ai/AISmartSearch';
 import { useNavigate } from 'react-router-dom';
 import { createLink, navigateTo } from '../../utils/router';
 
+// HeaderContainer: Sticky top navigation bar with elevated shadow for depth
+// مكون شريط علوي ثابت مع ظلال لتمييزه أثناء التمرير
 const HeaderContainer = styled.header`
   background: ${({ theme }) => theme.colors.background.card};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border.primary};
@@ -20,6 +31,8 @@ const HeaderContainer = styled.header`
   transition: all ${({ theme }) => theme.transitions.normal};
 `;
 
+// HeaderContent: Centers header content and manages spacing responsively
+// حاوية المحتوى التي تضبط المحاذاة والمسافات حسب حجم الشاشة
 const HeaderContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
@@ -34,6 +47,8 @@ const HeaderContent = styled.div`
   }
 `;
 
+// Logo: Brand lockup with icon + text and accent hover state
+// الشعار يجمع الأيقونة والنص مع تأثير لون عند التحويم
 const Logo = styled.a`
   display: flex;
   align-items: center;
@@ -52,6 +67,8 @@ const Logo = styled.a`
   }
 `;
 
+// Navigation: Desktop navigation that hides on medium/small screens
+// شريط الروابط الرئيسي الذي يختفي على الشاشات الصغيرة
 const Navigation = styled.nav`
   display: flex;
   align-items: center;
@@ -62,6 +79,8 @@ const Navigation = styled.nav`
   }
 `;
 
+// NavList: Horizontal list without bullets for nav items
+// قائمة أفقية بدون نقاط للعناصر
 const NavList = styled.ul`
   display: flex;
   align-items: center;
@@ -71,10 +90,14 @@ const NavList = styled.ul`
   padding: 0;
 `;
 
+// NavItem: Wrapper to allow relative positioned indicators if needed
+// غلاف يسمح بوضع مؤشرات relative مستقبلاً
 const NavItem = styled.li`
   position: relative;
 `;
 
+// NavLink: Styled Link with active + hover states for current route
+// رابط ملاحي مع حالات مميزة للمسار الحالي والتحويم
 const NavLink = styled(Link)`
   display: flex;
   align-items: center;
@@ -97,6 +120,8 @@ const NavLink = styled(Link)`
   }
 `;
 
+// HeaderActions: Cluster action buttons (search, wishlist, cart, theme, menu)
+// حاوية أزرار الإجراءات (بحث، مفضلة، سلة، مظهر، قائمة)
 const HeaderActions = styled.div`
   display: flex;
   align-items: center;
@@ -104,6 +129,8 @@ const HeaderActions = styled.div`
 `;
 
 
+// SearchBox: Wraps the inline search input (hidden on very small screens)
+// حاوية مربع البحث الذي يختفي على الشاشات الصغيرة جداً
 const SearchBox = styled.div`
   position: relative;
   display: flex;
@@ -114,6 +141,8 @@ const SearchBox = styled.div`
   }
 `;
 
+// SearchInput: Rounded search field that expands on focus for better typing
+// حقل بحث دائري يتوسع عند التركيز لتحسين تجربة الكتابة
 const SearchInput = styled.input`
   width: 300px;
   padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
@@ -145,6 +174,8 @@ const SearchInput = styled.input`
   }
 `;
 
+// SearchButton: Icon button inside search input to trigger search
+// زر أيقوني داخل حقل البحث لتنفيذ العملية
 const SearchButton = styled.button`
   position: absolute;
   right: ${({ theme }) => theme.spacing.sm};
@@ -161,6 +192,8 @@ const SearchButton = styled.button`
   }
 `;
 
+// CartButton: Action button used for wishlist/cart icons with hover highlight
+// زر للأيقونات (السلة/المفضلة) مع تمييز عند التحويم
 const CartButton = styled.button`
   position: relative;
   background: none;
@@ -181,6 +214,8 @@ const CartButton = styled.button`
   }
 `;
 
+// CartCount: Floating badge to display current item counts
+// شارة عائمة لعرض عدد العناصر الحالي
 const CartCount = styled.span`
   position: absolute;
   top: -2px;
@@ -198,6 +233,8 @@ const CartCount = styled.span`
   justify-content: center;
 `;
 
+// ThemeToggle: Button to switch between light/dark modes
+// زر تبديل المظهر (فاتح/داكن)
 const ThemeToggle = styled.button`
   background: none;
   border: none;
@@ -217,6 +254,8 @@ const ThemeToggle = styled.button`
   }
 `;
 
+// MobileMenuButton: Hamburger/close toggle only visible on medium screens down
+// زر القائمة (همبرغر/إغلاق) يظهر فقط على الشاشات المتوسطة فأقل
 const MobileMenuButton = styled.button`
   display: none;
   background: none;
@@ -240,6 +279,8 @@ const MobileMenuButton = styled.button`
   }
 `;
 
+// MobileMenu: Slide-down panel for navigation on mobile devices
+// قائمة منزلقة لعرض الروابط على الأجهزة المحمولة
 const MobileMenu = styled.div`
   display: none;
   position: absolute;
@@ -260,6 +301,8 @@ const MobileMenu = styled.div`
   }
 `;
 
+// MobileNavList: Vertical list with spacing for touch-friendly links
+// قائمة عمودية مع مسافات مناسبة للمس
 const MobileNavList = styled.ul`
   list-style: none;
   margin: 0;
@@ -269,6 +312,8 @@ const MobileNavList = styled.ul`
   gap: ${({ theme }) => theme.spacing.sm};
 `;
 
+// MobileNavLink: Full-width tappable links with active highlighting
+// روابط بعرض كامل قابلة للنقر مع إبراز للمسار الحالي
 const MobileNavLink = styled(Link)`
   display: block;
   padding: ${({ theme }) => theme.spacing.md};
@@ -290,14 +335,28 @@ const MobileNavLink = styled(Link)`
 `;
 
 const Header = () => {
+  // Theme context: pulls current mode + toggler for global styling
+  // سياق المظهر: يجلب وضع المظهر الحالي وزر التبديل
   const { isDarkMode, toggleTheme } = useTheme();
+  // Cart context: provides aggregated cart count for the badge
+  // سياق السلة: يوفر إجمالي العناصر لعرضه في الشارة
   const { totalItems } = useCart();
+  // Wishlist context: supplies wishlist items for badge count
+  // سياق المفضلة: يقدم العناصر الحالية لحساب الشارة
   const { items: wishlistItems } = useWishlist();
+  // isMobileMenuOpen: Tracks the visibility of the collapsible mobile nav
+  // حالة فتح/إغلاق قائمة الهاتف المحمول
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // searchQuery: Stores the AI search text entered by the user
+  // نص البحث الذي يدخله المستخدم
   const [searchQuery, setSearchQuery] = useState('');
+  // location: Current router location to determine the active link
+  // المسار الحالي لمعرفة الرابط النشط
   const location = useLocation();
   const navigate = useNavigate();
 
+  // navItems: Declarative structure for navigation links + labels
+  // مصفوفة الروابط: تحدد المسارات وعناوينها بالعربية
   const navItems = [
     { path: '/', label: 'الرئيسية' },
     { path: '/shop', label: 'المنتجات' },
@@ -305,20 +364,37 @@ const Header = () => {
     { path: '/contact', label: 'تواصل معنا' },
   ];
 
+  /**
+   * handleSearch - ينفذ البحث الذكي
+   * EN: Navigates to the shop page with the entered query while preventing
+   * default form submission to avoid page reloads.
+   * AR: ينتقل إلى صفحة المتجر مع تضمين نص البحث في الـ query بدون إعادة تحميل الصفحة.
+   */
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Navigate to search results page with query parameter
+      // Use navigate for client-side routing and keep GitHub Pages compatible links
+      // نستخدم navigate للتوجيه الداخلي مع الحفاظ على توافق روابط GitHub Pages
       navigate(`/shop?search=${encodeURIComponent(searchQuery)}`);
     }
   };
 
+  /**
+   * handleKeyPress - يدعم تنفيذ البحث عند الضغط على Enter
+   * EN: Triggers the search flow when the user presses Enter inside the input.
+   * AR: يشغّل عملية البحث تلقائياً عند الضغط على زر الإدخال.
+   */
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleSearch(e);
     }
   };
 
+  /**
+   * toggleMobileMenu - تبديل حالة قائمة الهاتف
+   * EN: Opens or closes the slide-down mobile navigation for small screens.
+   * AR: يفتح أو يغلق قائمة التنقل المنسدلة على الهواتف.
+   */
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -326,6 +402,8 @@ const Header = () => {
   return (
     <HeaderContainer>
       <HeaderContent>
+        {/* createLink ensures correct base path for GitHub Pages deployments */}
+        {/* createLink يضمن توافق الروابط مع GitHub Pages */}
         <Logo as="a" href={createLink('/')}>
           <FaMicrochip />
           Y0 Hardware
@@ -352,11 +430,15 @@ const Header = () => {
 
           <CartButton as="a" href={createLink('/wishlist')}>
             <FaHeart />
+            {/* Badge only renders when wishlist contains items */}
+            {/* تظهر الشارة فقط عند وجود عناصر في المفضلة */}
             {wishlistItems.length > 0 && <CartCount>{wishlistItems.length}</CartCount>}
           </CartButton>
 
           <CartButton as="a" href={createLink('/cart')}>
             <FaShoppingCart />
+            {/* Same conditional rendering for cart quantity */}
+            {/* نفس منطق الإظهار الشرطي لعدد عناصر السلة */}
             {totalItems > 0 && <CartCount>{totalItems}</CartCount>}
           </CartButton>
 

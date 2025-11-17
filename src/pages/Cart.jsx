@@ -1,3 +1,11 @@
+/**
+ * Cart Page - صفحة سلة التسوق
+ * --------------------------------------------------------------
+ * Purpose (الغرض): Display items added to the cart with quantity
+ * controls, pricing breakdown, and checkout summary sidebar.
+ * Features (المميزات): Increment/decrement, remove, clear cart,
+ * sticky summary, free-shipping logic, and empty state guidance.
+ */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CartSEO } from '../components/common/SEO';
@@ -29,6 +37,8 @@ const PageTitle = styled.h1`
   }
 `;
 
+// CartContent: Two-column layout (items + summary) that stacks on mobile
+// حاوية المحتوى تقسم الصفحة إلى عناصر السلة وملخص الطلب
 const CartContent = styled.div`
   display: grid;
   grid-template-columns: 1fr 350px;
@@ -49,6 +59,8 @@ const CartItem = styled(Card)`
   padding: ${({ theme }) => theme.spacing.lg};
 `;
 
+// ItemContent: Grid aligning image, details, and actions consistently
+// شبكة تعرض صورة المنتج والتفاصيل والإجراءات في صف واحد
 const ItemContent = styled.div`
   display: grid;
   grid-template-columns: 120px 1fr auto;
@@ -126,6 +138,8 @@ const ItemActions = styled.div`
   }
 `;
 
+// QuantityControls: Compact control with rounded border and spacing
+// أزرار التحكم بالكمية ضمن إطار مستدير
 const QuantityControls = styled.div`
   display: flex;
   align-items: center;
@@ -187,6 +201,8 @@ const ItemTotal = styled.div`
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
+// CartSummary: Sticky card on desktop to keep totals in view
+// بطاقة ملخص الطلب تبقى ثابتة أثناء التمرير على الشاشات الكبيرة
 const CartSummary = styled(Card)`
   height: fit-content;
   position: sticky;
@@ -265,6 +281,11 @@ const EmptyCart = styled.div`
 const Cart = () => {
   const { items, totalItems, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
 
+  /**
+   * formatPrice - تنسيق المبالغ
+   * EN: Formats amounts in Egyptian Pounds with zero fractional digits.
+   * AR: ينسق المبالغ بالجنيه المصري دون كسور.
+   */
   const formatPrice = (price) => {
     return new Intl.NumberFormat('ar-EG', {
       style: 'currency',
@@ -273,11 +294,20 @@ const Cart = () => {
     }).format(price);
   };
 
+  /**
+   * calculateItemTotal - إجمالي المنتج
+   * EN: Simple helper for price × quantity to keep JSX clean.
+   * AR: دالة مساعدة لحساب السعر الإجمالي لكل عنصر.
+   */
   const calculateItemTotal = (item) => {
     return item.price * item.quantity;
   };
 
+  // shippingCost: Free shipping beyond 1000 EGP, otherwise flat 50 EGP
+  // تكلفة الشحن مجانية عند تجاوز 1000 جنيه وإلا 50 جنيه ثابتة
   const shippingCost = totalPrice > 1000 ? 0 : 50;
+  // finalTotal: Sum of subtotal and shipping
+  // الإجمالي النهائي = المجموع الفرعي + الشحن
   const finalTotal = totalPrice + shippingCost;
 
   if (items.length === 0) {
@@ -288,6 +318,8 @@ const Cart = () => {
           سلة التسوق
         </PageTitle>
         <EmptyCart>
+          {/* Empty state encourages browsing when cart has no items */}
+          {/* الحالة الفارغة تشجع المستخدم على العودة للمتجر */}
           <FaShoppingBag />
           <h2>سلة التسوق فارغة</h2>
           <p>لم تقم بإضافة أي منتجات إلى سلة التسوق بعد</p>
@@ -336,7 +368,7 @@ const Cart = () => {
                       <FaMinus />
                     </QuantityButton>
                     <QuantityDisplay>{item.quantity}</QuantityDisplay>
-                    <QuantityButton
+                  <QuantityButton
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
                     >
                       <FaPlus />

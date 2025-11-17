@@ -1,3 +1,12 @@
+/**
+ * Product Details Page - صفحة تفاصيل المنتج
+ * --------------------------------------------------------------
+ * Purpose (الغرض): Provides comprehensive product presentation with
+ * images, pricing, specs, reviews, related products, and AI blocks.
+ * Features (المميزات): Quantity selector, wishlist/cart actions,
+ * share functionality, review system, and used-product info cards.
+ * Navigation (التنقل): Pulls product ID from route params via `useParams`.
+ */
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ProductSEO } from '../components/common/SEO';
@@ -55,6 +64,8 @@ const Breadcrumb = styled.nav`
   }
 `;
 
+// ProductLayout: Two-column grid collapsing to single column on tablets/mobile
+// تخطيط بعمودين يتحول إلى عمود واحد عند صغر الشاشة
 const ProductLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -207,6 +218,8 @@ const QuantityLabel = styled.span`
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
+// QuantityControls: Border-wrapped buttons with overflow hidden for pill look
+// مجموعة تحكم بالكمية مع حدود واضحة لمنع القفزات
 const QuantityControls = styled.div`
   display: flex;
   align-items: center;
@@ -360,6 +373,8 @@ const ProductsGrid = styled.div`
   gap: ${({ theme }) => theme.spacing.lg};
 `;
 
+// UsedProductInfo: Highlight card for reconditioned product notes (gradient + accent border)
+// بطاقة معلومات المنتج المستعمل بخلفية متدرجة وحد جانبي مميز
 const UsedProductInfo = styled(Card)`
   padding: ${({ theme }) => theme.spacing.lg};
   margin-top: ${({ theme }) => theme.spacing.lg};
@@ -401,13 +416,19 @@ const ProductDetails = () => {
   const { addItem } = useCart();
   const { success, info } = useNotification();
   const { toggleItem, isInWishlist } = useWishlist();
+  // quantity: User-selected amount to add to cart (minimum 1)
+  // الكمية المختارة لإضافتها إلى السلة (لا تقل عن 1)
   const [quantity, setQuantity] = useState(1);
+  // reviews: Local state sourced from reviewsDatabase per product ID
+  // المراجعات الحالية المحفوظة محلياً لهذا المنتج
   const [reviews, setReviews] = useState(reviewsDatabase[parseInt(id)] || []);
 
   const product = productsDatabase.find(p => p.id === parseInt(id));
 
   useEffect(() => {
     if (!product) {
+      // Redirect unknown IDs back to shop to prevent blank view
+      // إعادة التوجيه للمتجر إذا لم يتم العثور على المنتج
       navigateTo('/shop');
     }
   }, [product]);
@@ -416,10 +437,17 @@ const ProductDetails = () => {
     return null;
   }
 
+  // relatedProducts: Same category, excluding current product, limited to four cards
+  // منتجات مشابهة ضمن نفس الفئة مع استثناء المنتج الحالي
   const relatedProducts = productsDatabase
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
+  /**
+   * handleAddToCart - إضافة للسلة
+   * EN: Adds the product multiple times based on the selected quantity.
+   * AR: يكرر إضافة المنتج حسب الكمية المختارة مع إشعار نجاح.
+   */
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       addItem(product);
@@ -427,10 +455,20 @@ const ProductDetails = () => {
     success(`تم إضافة ${quantity} من ${product.name} إلى السلة`);
   };
 
+  /**
+   * handleQuantityChange - تعديل الكمية
+   * EN: Ensures quantity never drops below 1 using Math.max.
+   * AR: يمنع أن تنخفض الكمية عن واحد.
+   */
   const handleQuantityChange = (change) => {
     setQuantity(prev => Math.max(1, prev + change));
   };
 
+  /**
+   * toggleWishlist - تبديل حالة المفضلة
+   * EN: Uses wishlist context to add/remove and surfaces contextual toasts.
+   * AR: يستخدم سياق المفضلة لإضافة/إزالة المنتج مع رسائل فورية.
+   */
   const toggleWishlist = () => {
     const isAdded = toggleItem(product);
     if (isAdded) {
@@ -440,6 +478,11 @@ const ProductDetails = () => {
     }
   };
 
+  /**
+   * handleShare - مشاركة المنتج
+   * EN: Prefers Web Share API when available; falls back to copying URL.
+   * AR: يستخدم Web Share إن وجد، وإلا ينسخ الرابط للحافظة.
+   */
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -449,13 +492,20 @@ const ProductDetails = () => {
       });
     } else {
       // Fallback: copy to clipboard
+      // حل بديل: نسخ الرابط إلى الحافظة عند عدم دعم Web Share
       navigator.clipboard.writeText(window.location.href);
       success('تم نسخ رابط المنتج');
     }
   };
 
+  /**
+   * handleAddReview - إضافة مراجعة جديدة
+   * EN: Optimistically prepends review locally; TODO to sync with backend.
+   * AR: يضيف المراجعة في الواجهة حالياً مع تذكير لربطها بواجهة خلفية لاحقاً.
+   */
   const handleAddReview = async (reviewData) => {
     // Add new review to the list
+    // إضافة المراجعة للواجهة بشكل فوري
     const newReview = {
       ...reviewData,
       id: Date.now(),
@@ -466,17 +516,32 @@ const ProductDetails = () => {
     // Example: await api.post('/reviews', newReview);
   };
 
+  /**
+   * renderStars - عرض النجوم
+   * EN: Builds a 5-star visualization based on product rating value.
+   * AR: ينشئ خمسة نجوم مع تلوين النجوم الموافقة للتقييم.
+   */
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, index) => (
       <Star key={index} filled={index < rating} />
     ));
   };
 
+  /**
+   * calculateDiscount - حساب الخصم
+   * EN: Returns percentage drop between old and current price.
+   * AR: يعيد نسبة الخصم بين السعر القديم والجديد.
+   */
   const calculateDiscount = () => {
     if (!product.oldPrice) return null;
     return Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
   };
 
+  /**
+   * formatPrice - تنسيق السعر
+   * EN: Formats value using Egyptian Pound localization.
+   * AR: ينسق القيم بالجنيه المصري مع حذف الكسور.
+   */
   const formatPrice = (price) => {
     return new Intl.NumberFormat('ar-EG', {
       style: 'currency',
@@ -485,6 +550,11 @@ const ProductDetails = () => {
     }).format(price);
   };
 
+  /**
+   * getBadgeText - ترجمة الشارة
+   * EN: Maps badge identifiers to Arabic labels.
+   * AR: يحول رموز الشارات إلى نصوص عربية مفهومة.
+   */
   const getBadgeText = (badge) => {
     switch (badge) {
       case 'new': return 'جديد';
@@ -622,6 +692,8 @@ const ProductDetails = () => {
       <SpecificationsCard>
         <SpecTitle>المواصفات التقنية</SpecTitle>
         <SpecTable>
+          {/* Object.entries transforms the specs object into rows */}
+          {/* Object.entries يحول كائن المواصفات إلى صفوف قابلة للعرض */}
           {Object.entries(product.specifications).map(([key, value]) => (
             <SpecRow key={key}>
               <SpecLabel>{key}</SpecLabel>

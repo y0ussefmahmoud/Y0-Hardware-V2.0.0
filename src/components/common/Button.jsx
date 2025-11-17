@@ -1,11 +1,21 @@
+/**
+ * Button Component - زر قابل لإعادة الاستخدام
+ * --------------------------------------------------------------
+ * Purpose (الغرض): Shared CTA with variants, sizes, loading state,
+ * and full-width option used across the application.
+ */
 import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
+// spin animation: subtle rotation for loading indicator
+// حركة دوران بسيطة لمؤشر التحميل
 const spin = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 `;
 
+// LoadingSpinner: inline spinner rendered before button text in loading mode
+// مؤشر تحميل يظهر قبل نص الزر عند تفعيل loading
 const LoadingSpinner = styled.div`
   width: 16px;
   height: 16px;
@@ -16,7 +26,8 @@ const LoadingSpinner = styled.div`
   margin-right: ${({ theme }) => theme.spacing.sm};
 `;
 
-// Button Variants
+// buttonVariants: Theme-aware palette for each variant (primary/secondary/etc.)
+// أنماط الألوان لكل نوع زر (أساسي، ثانوي، نجاح، خطر، شبح)
 const buttonVariants = {
   primary: css`
     background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary});
@@ -80,7 +91,8 @@ const buttonVariants = {
   `,
 };
 
-// Button Sizes
+// buttonSizes: Padding + font sizing presets for sm/md/lg
+// أحجام الزر الافتراضية من حيث الحشو وحجم الخط
 const buttonSizes = {
   sm: css`
     padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
@@ -101,6 +113,8 @@ const buttonSizes = {
   `,
 };
 
+// StyledButton: Base styles + variant/size composability
+// المكون الأساسي الذي يجمع الأنماط العامة مع الأنواع والأحجام
 const StyledButton = styled.button`
   display: inline-flex;
   align-items: center;
@@ -125,7 +139,8 @@ const StyledButton = styled.button`
     width: 100%;
   `}
   
-  /* Loading state */
+  /* Loading state - hides children and shows pseudo spinner */
+  /* حالة التحميل: تخفي المحتوى وتعرض مؤشر دوران */
   ${({ loading }) => loading && css`
     cursor: not-allowed;
     
@@ -162,6 +177,18 @@ const StyledButton = styled.button`
   }
 `;
 
+/**
+ * Button Component - زر قابل لإعادة الاستخدام
+ * 
+ * @param {React.ReactNode} children - محتوى الزر (نص/أيقونات)
+ * @param {string} [variant='primary'] - نوع الزر (primary/secondary/success/danger/ghost)
+ * @param {string} [size='md'] - حجم الزر (sm/md/lg)
+ * @param {boolean} [fullWidth=false] - هل يمتد الزر بعرض الحاوية
+ * @param {boolean} [disabled=false] - تعطيل الزر
+ * @param {boolean} [loading=false] - عرض حالة التحميل
+ * @param {Function} [onClick] - دالة النقر
+ * @param {string} [type='button'] - نوع الزر (button/submit/reset)
+ */
 const Button = ({ 
   children, 
   variant = 'primary', 

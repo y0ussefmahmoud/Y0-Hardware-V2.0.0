@@ -1,3 +1,10 @@
+/**
+ * Wishlist Page - صفحة قائمة المفضلة
+ * --------------------------------------------------------------
+ * Purpose (الغرض): Displays saved products with filtering, sorting,
+ * summary stats, and bulk actions (add all to cart, clear, share).
+ * Layout (التخطيط): Grid of product cards alongside gradient summary.
+ */
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -79,6 +86,8 @@ const FilterSelect = styled.select`
   }
 `;
 
+// WishlistSummary: Gradient panel showing KPIs (count/value/average)
+// بطاقة تلخص عدد العناصر والقيمة والمتوسط بألوان متدرجة
 const WishlistSummary = styled(Card)`
   padding: ${({ theme }) => theme.spacing.xl};
   margin-bottom: ${({ theme }) => theme.spacing.xl};
@@ -109,6 +118,8 @@ const SummaryLabel = styled.span`
   color: ${({ theme }) => theme.colors.text.secondary};
 `;
 
+// WishlistGrid: Responsive card grid for wishlist items
+// شبكة مرنة لعرض المنتجات المفضلة
 const WishlistGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -148,6 +159,8 @@ const ItemBadge = styled.span`
   font-weight: ${({ theme }) => theme.fonts.weights.semibold};
 `;
 
+// ItemActions: Hover-revealed buttons for remove/share actions
+// أزرار تظهر عند التحويم لإزالة أو مشاركة المنتج
 const ItemActions = styled.div`
   position: absolute;
   top: ${({ theme }) => theme.spacing.md};
@@ -234,6 +247,8 @@ const AddedDate = styled.span`
   display: block;
 `;
 
+// ItemFooter: Holds per-item action buttons with spacing
+// قسم الأزرار السفلية لكل عنصر
 const ItemFooter = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
@@ -276,20 +291,30 @@ const Wishlist = () => {
   const { items, totalItems, clearWishlist, removeItem, getWishlistSummary } = useWishlist();
   const { addItem: addToCart } = useCart();
   const { success, info } = useNotification();
+  // sortBy: Controls ordering (newest, price, name)
+  // معيار الترتيب الحالي
   const [sortBy, setSortBy] = useState('newest');
+  // filterBy: Category filter (all/pc-parts/etc.)
+  // الفئة المختارة لتصفية العناصر
   const [filterBy, setFilterBy] = useState('all');
 
+  // summary stats fetched from context helper (totalItems, totalValue, averagePrice)
+  // ملخص سريع للقيم المجمعة
   const summary = getWishlistSummary();
 
+  // filteredAndSortedItems: useMemo for filter + sort pipeline
+  // قائمة العناصر بعد الفلترة والترتيب للحفاظ على الأداء
   const filteredAndSortedItems = React.useMemo(() => {
     let filtered = [...items];
 
     // Apply filter
+    // تطبيق فلتر الفئة إذا لم تكن "الكل"
     if (filterBy !== 'all') {
       filtered = filtered.filter(item => item.category === filterBy);
     }
 
     // Apply sort
+    // ترتيب العناصر حسب المعيار المحدد مع دعم التاريخ والسعر والاسم
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'newest':
@@ -310,16 +335,31 @@ const Wishlist = () => {
     return filtered;
   }, [items, sortBy, filterBy]);
 
+  /**
+   * handleRemoveItem - إزالة منتج واحد
+   * EN: Removes the item then shows informational toast.
+   * AR: يحذف المنتج من المفضلة ويعرض إشعاراً بذلك.
+   */
   const handleRemoveItem = (productId, productName) => {
     removeItem(productId);
     info(`تم إزالة ${productName} من المفضلة`);
   };
 
+  /**
+   * handleAddToCart - إضافة عنصر مفرد للسلة
+   * EN: Reuses cart context and confirms with success notification.
+   * AR: يستخدم سياق السلة مع إشعار نجاح.
+   */
   const handleAddToCart = (product) => {
     addToCart(product);
     success(`تم إضافة ${product.name} إلى السلة`);
   };
 
+  /**
+   * handleAddAllToCart - إضافة كل العناصر المعروضة
+   * EN: Iterates over filtered view (respecting filters) and adds to cart.
+   * AR: يضيف جميع العناصر بعد الفلترة الحالية للسلة دفعة واحدة.
+   */
   const handleAddAllToCart = () => {
     filteredAndSortedItems.forEach(item => {
       addToCart(item);
@@ -327,11 +367,21 @@ const Wishlist = () => {
     success(`تم إضافة ${filteredAndSortedItems.length} منتج إلى السلة`);
   };
 
+  /**
+   * handleClearWishlist - إفراغ القائمة
+   * EN: Clears entire wishlist through context helper then toasts.
+   * AR: يمسح كل العناصر ويعرض رسالة.
+   */
   const handleClearWishlist = () => {
     clearWishlist();
     info('تم إفراغ قائمة المفضلة');
   };
 
+  /**
+   * handleShare - مشاركة منتج
+   * EN: Utilizes Web Share API when available or copies fallback URL.
+   * AR: يشارك رابط المنتج أو ينسخه في حال عدم دعم API.
+   */
   const handleShare = (product) => {
     const url = `${window.location.origin}/product/${product.id}`;
     if (navigator.share) {
@@ -346,6 +396,9 @@ const Wishlist = () => {
     }
   };
 
+  /**
+   * formatPrice - تنسيق السعر
+   */
   const formatPrice = (price) => {
     return new Intl.NumberFormat('ar-EG', {
       style: 'currency',
@@ -354,6 +407,11 @@ const Wishlist = () => {
     }).format(price);
   };
 
+  /**
+   * formatDate - تنسيق تاريخ الإضافة
+   * EN: Localizes to Arabic short month/day for readability.
+   * AR: يظهر التاريخ بتنسيق عربي مختصر.
+   */
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ar-EG', {
@@ -371,6 +429,8 @@ const Wishlist = () => {
           قائمة المفضلة
         </PageTitle>
         <EmptyWishlist>
+          {/* Empty state encourages exploring shop when nothing saved */}
+          {/* حالة فارغة تحفز المستخدم للعودة إلى المتجر */}
           <FaHeart />
           <h2>قائمة المفضلة فارغة</h2>
           <p>لم تقم بإضافة أي منتجات إلى قائمة المفضلة بعد</p>
@@ -431,6 +491,8 @@ const Wishlist = () => {
         </SummaryGrid>
       </WishlistSummary>
 
+      {/* Render filtered view rather than original array for consistent UX */}
+      {/* استخدام filteredAndSortedItems لضمان احترام الفلاتر والفرز */}
       <WishlistGrid>
         {filteredAndSortedItems.map(item => (
           <WishlistItemCard key={item.id}>

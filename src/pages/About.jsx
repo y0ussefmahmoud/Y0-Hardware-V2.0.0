@@ -1,3 +1,10 @@
+/**
+ * About Page - صفحة من نحن
+ * --------------------------------------------------------------
+ * Purpose (الغرض): Share company story, stats, values, and team.
+ * Sections (الأقسام): Hero intro, stats grid, story section, values grid,
+ * and team showcase for trust-building.
+ */
 import React from 'react';
 import styled from 'styled-components';
 import { 
@@ -12,6 +19,7 @@ import {
 } from 'react-icons/fa';
 import Card from '../components/common/Card';
 
+// AboutContainer: Centers page content with generous padding
 const AboutContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
@@ -19,6 +27,7 @@ const AboutContainer = styled.div`
   min-height: calc(100vh - 160px);
 `;
 
+// HeroSection: Gradient hero block introducing the company
 const HeroSection = styled.section`
   text-align: center;
   padding: ${({ theme }) => theme.spacing['3xl']} 0;
@@ -50,6 +59,7 @@ const HeroSubtitle = styled.p`
   line-height: 1.6;
 `;
 
+// StatsGrid: Auto-fit cards to highlight company KPIs
 const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -57,6 +67,7 @@ const StatsGrid = styled.div`
   margin: ${({ theme }) => theme.spacing['3xl']} 0;
 `;
 
+// StatCard: Hoverable card used for each stat metric
 const StatCard = styled(Card)`
   text-align: center;
   padding: ${({ theme }) => theme.spacing.xl};
@@ -152,6 +163,7 @@ const CardDescription = styled.p`
   margin: 0;
 `;
 
+// StorySection: Soft background area for company narrative
 const StorySection = styled.div`
   background: ${({ theme }) => theme.colors.background.secondary};
   padding: ${({ theme }) => theme.spacing['3xl']};
@@ -178,6 +190,7 @@ const TeamGrid = styled.div`
   gap: ${({ theme }) => theme.spacing.xl};
 `;
 
+// TeamCard: Animated card for each team member
 const TeamCard = styled(Card)`
   text-align: center;
   padding: ${({ theme }) => theme.spacing.xl};
@@ -189,6 +202,7 @@ const TeamCard = styled(Card)`
   }
 `;
 
+// TeamAvatar: Gradient circle showing member initials
 const TeamAvatar = styled.div`
   width: 100px;
   height: 100px;
@@ -224,6 +238,7 @@ const TeamDescription = styled.p`
 `;
 
 const About = () => {
+  // stats: Highlight quick achievements (clients, experience, etc.)
   const stats = [
     { icon: <FaUsers />, number: '10,000+', label: 'عميل راضٍ' },
     { icon: <FaAward />, number: '5+', label: 'سنوات خبرة' },
@@ -231,6 +246,7 @@ const About = () => {
     { icon: <FaRocket />, number: '50,000+', label: 'منتج مباع' },
   ];
 
+  // values: Core principles presented in cards
   const values = [
     {
       icon: <FaShieldAlt />,
@@ -254,6 +270,7 @@ const About = () => {
     }
   ];
 
+  // team: Placeholder data for key team members (could swap with CMS)
   const team = [
     {
       name: 'يوسف محمود',
@@ -291,6 +308,7 @@ const About = () => {
         </HeroSubtitle>
       </HeroSection>
 
+      {/* Map over stats array to render KPI cards */}
       <StatsGrid>
         {stats.map((stat, index) => (
           <StatCard key={index}>

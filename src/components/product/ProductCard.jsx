@@ -1,3 +1,13 @@
+/**
+ * ProductCard Component - بطاقة عرض المنتج
+ * ----------------------------------------------------------------
+ * Purpose (الغرض): Showcases a single product with imagery, pricing,
+ * ratings, and quick actions (wishlist/cart) throughout the storefront.
+ * Features (المميزات): Hover lift, action buttons, badge system, condition,
+ * stock state, and currency formatting tailored for Egypt.
+ * Usage (الاستخدام): Consumed in `Home.jsx`, `Shop.jsx`, and related products
+ * sections within `ProductDetails.jsx`.
+ */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -9,6 +19,8 @@ import { useWishlist } from '../../context/WishlistContext';
 import Button from '../common/Button';
 import Card from '../common/Card';
 
+// ProductCardContainer: Hover elevation + shadow to emphasize interactivity
+// حاوية البطاقة مع تأثير رفع وظل لبيان أنها قابلة للنقر
 const ProductCardContainer = styled(Card)`
   position: relative;
   overflow: hidden;
@@ -20,6 +32,8 @@ const ProductCardContainer = styled(Card)`
   }
 `;
 
+// ProductImage: Maintains aspect ratio with subtle gradient overlay on hover
+// صورة المنتج تحافظ على الأبعاد وتضيف تدرجاً لطيفاً عند التحويم
 const ProductImage = styled.div`
   position: relative;
   width: 100%;
@@ -51,6 +65,8 @@ const ProductImage = styled.div`
   }
 `;
 
+// ProductBadge: Dynamic badges (new/sale/etc.) with conditional colors
+// شارة المنتج تتغير ألوانها بناءً على نوع الشارة (جديد، تخفيض...)
 const ProductBadge = styled.span`
   position: absolute;
   top: ${({ theme }) => theme.spacing.md};
@@ -88,6 +104,8 @@ const ProductBadge = styled.span`
   }}
 `;
 
+// ProductActions: Hidden action stack that fades/slides in on hover
+// مجموعة أزرار تظهر تدريجياً عند تمرير المؤشر
 const ProductActions = styled.div`
   position: absolute;
   top: ${({ theme }) => theme.spacing.md};
@@ -106,6 +124,8 @@ const ProductActions = styled.div`
   }
 `;
 
+// ActionButton: Reusable icon button with scale animation on hover
+// زر أيقونة مع حركة تكبير بسيطة لزيادة وضوح التفاعل
 const ActionButton = styled.button`
   width: 40px;
   height: 40px;
@@ -131,10 +151,14 @@ const ActionButton = styled.button`
   }
 `;
 
+// ProductInfo: Wraps textual content with consistent padding
+// قسم المعلومات النصية مع حشو موحد
 const ProductInfo = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
 `;
 
+// ProductTitle: Clamped title to avoid layout shifts for long names
+// عنوان المنتج يُقص عند سطرين للحفاظ على التناسق
 const ProductTitle = styled.h3`
   font-size: ${({ theme }) => theme.fonts.sizes.lg};
   font-weight: ${({ theme }) => theme.fonts.weights.semibold};
@@ -147,6 +171,8 @@ const ProductTitle = styled.h3`
   overflow: hidden;
 `;
 
+// ProductDescription: Two-line clamp summary for quick scanning
+// وصف مختصر لا يتجاوز سطرين لسرعة القراءة
 const ProductDescription = styled.p`
   font-size: ${({ theme }) => theme.fonts.sizes.sm};
   color: ${({ theme }) => theme.colors.text.secondary};
@@ -158,6 +184,8 @@ const ProductDescription = styled.p`
   overflow: hidden;
 `;
 
+// ProductRating: Horizontal stack for stars + count
+// عرض النجوم مع عدد المراجعات في صف واحد
 const ProductRating = styled.div`
   display: flex;
   align-items: center;
@@ -182,6 +210,8 @@ const RatingText = styled.span`
   color: ${({ theme }) => theme.colors.text.tertiary};
 `;
 
+// ProductPrice: Aligns current/old price and discount together
+// ينسق السعر الحالي مع السعر القديم ونسبة الخصم
 const ProductPrice = styled.div`
   display: flex;
   align-items: center;
@@ -216,6 +246,8 @@ const ProductFooter = styled.div`
   gap: ${({ theme }) => theme.spacing.sm};
 `;
 
+// StockStatus: Color-coded text (green = in stock, red = out of stock)
+// حالة المخزون تتلون بالأخضر أو الأحمر حسب التوفر
 const StockStatus = styled.span`
   font-size: ${({ theme }) => theme.fonts.sizes.xs};
   font-weight: ${({ theme }) => theme.fonts.weights.medium};
@@ -225,19 +257,54 @@ const StockStatus = styled.span`
   margin-bottom: ${({ theme }) => theme.spacing.sm};
 `;
 
+/**
+ * ProductCard Component - بطاقة عرض المنتج
+ *
+ * @param {Object} product - بيانات المنتج
+ * @param {number} product.id - معرف المنتج الفريد
+ * @param {string} product.name - اسم المنتج
+ * @param {string} product.description - وصف موجز
+ * @param {string} product.image - رابط الصورة
+ * @param {number} product.price - السعر الحالي
+ * @param {number} [product.oldPrice] - السعر القديم (اختياري)
+ * @param {number} product.rating - التقييم من 1 إلى 5
+ * @param {number} product.reviewCount - عدد المراجعات
+ * @param {boolean} product.inStock - حالة التوفر
+ * @param {string} [product.badge] - نوع الشارة (new/sale/bestseller/used)
+ * @param {string} [product.condition] - حالة المنتج المستعمل
+ */
 const ProductCard = ({ product }) => {
+  // Cart context: exposes addItem to push products into the cart
+  // سياق السلة لإضافة المنتج مباشرة عند الضغط على الزر
   const { addItem } = useCart();
   const { success, info } = useNotification();
+  // Wishlist context: toggleItem flips favorite state, isInWishlist checks status
+  // سياق المفضلة: toggleItem لتغيير الحالة و isInWishlist للتحقق من الوجود
   const { toggleItem, isInWishlist } = useWishlist();
 
+  /**
+   * handleAddToCart - إضافة المنتج للسلة
+   * EN: Prevents default anchor navigation, stops propagation so the card
+   * link doesn't open, then adds the product with a success toast.
+   * AR: يمنع الانتقال الافتراضي ويفصل الحدث عن البطاقة، ثم يضيف المنتج مع إشعار نجاح.
+   */
   const handleAddToCart = (e) => {
+    // Prevent navigating to product page when button is clicked
+    // منع الانتقال لصفحة المنتج عند الضغط على الزر
     e.preventDefault();
     e.stopPropagation();
     addItem(product);
     success(`تم إضافة ${product.name} إلى السلة`);
   };
 
+  /**
+   * handleToggleFavorite - تبديل حالة المفضلة
+   * EN: Toggles wishlist status and shows contextual notifications for add/remove.
+   * AR: يبدّل حالة المنتج في المفضلة مع إظهار إشعارات بالعربية.
+   */
   const handleToggleFavorite = (e) => {
+    // Same prevention to keep the user on the card grid
+    // نفس المنع للحفاظ على البقاء في الشبكة
     e.preventDefault();
     e.stopPropagation();
     const isAdded = toggleItem(product);
@@ -248,18 +315,33 @@ const ProductCard = ({ product }) => {
     }
   };
 
+  /**
+   * renderStars - عرض النجوم
+   * EN: Generates a list of five stars, marking those with index < rating.
+   * AR: ينشئ خمسة نجوم ويملأ العدد المطابق لقيمة التقييم.
+   */
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, index) => (
       <Star key={index} filled={index < rating} />
     ));
   };
 
+  /**
+   * calculateDiscount - حساب نسبة الخصم
+   * EN: Computes percentage difference between old/new price and rounds it.
+   * AR: يحسب فرق السعرين كنسبة مئوية بعد التقريب.
+   */
   const calculateDiscount = () => {
     if (!product.oldPrice) return null;
     const discount = Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
     return discount;
   };
 
+  /**
+   * formatPrice - تنسيق السعر
+   * EN: Formats numbers into Egyptian Pound (EGP) currency without decimals.
+   * AR: ينسق السعر بعملة الجنيه المصري بدون كسور.
+   */
   const formatPrice = (price) => {
     return new Intl.NumberFormat('ar-EG', {
       style: 'currency',
@@ -282,6 +364,8 @@ const ProductCard = ({ product }) => {
         
         <ProductActions>
           <ActionButton onClick={handleToggleFavorite} title="إضافة للمفضلة">
+            {/* Highlight heart when product is already in wishlist */}
+            {/* يتم تغيير لون القلب عند كون المنتج في المفضلة */}
             <FaHeart style={{ color: isInWishlist(product.id) ? '#ff4757' : undefined }} />
           </ActionButton>
           <ActionButton as="a" href={createLink(`/product/${product.id}`)} title="عرض التفاصيل">

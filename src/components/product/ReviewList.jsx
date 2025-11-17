@@ -1,3 +1,12 @@
+/**
+ * ReviewList Component - قائمة المراجعات والتقييمات
+ * ----------------------------------------------------------------
+ * Purpose (الغرض): Displays review statistics, filters, sorting options,
+ * pagination, and the add-review form for a given product.
+ * Features (المميزات): Rating breakdown, helpful sort, load more button,
+ * empty-state encouragement, and bilingual UI texts.
+ * Usage (الاستخدام): Rendered inside `ProductDetails.jsx` beneath the specs.
+ */
 import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { FaFilter, FaSortAmountDown, FaPlus, FaStar } from 'react-icons/fa';
@@ -7,10 +16,14 @@ import StarRating from '../common/StarRating';
 import Button from '../common/Button';
 import Card from '../common/Card';
 
+// ReviewsContainer: Adds spacing above the review block
+// حاوية المراجعات مع هامش علوي لتمييز القسم
 const ReviewsContainer = styled.section`
   margin-top: ${({ theme }) => theme.spacing['3xl']};
 `;
 
+// ReviewsHeader: Flex layout for title + filter controls
+// رأس القسم يعرض العنوان وأدوات الفلترة في صف واحد
 const ReviewsHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -57,6 +70,8 @@ const FilterSelect = styled.select`
   }
 `;
 
+// ReviewsSummary: Gradient-backed card summarizing average + breakdown
+// بطاقة ملخص بالألوان المتدرجة لعرض المتوسط وتفاصيل التقييمات
 const ReviewsSummary = styled(Card)`
   padding: ${({ theme }) => theme.spacing.xl};
   margin-bottom: ${({ theme }) => theme.spacing.xl};
@@ -100,6 +115,8 @@ const TotalReviews = styled.span`
   color: ${({ theme }) => theme.colors.text.secondary};
 `;
 
+// RatingBreakdown: Column of rows showing percentage per rating
+// قسم توزيع النجوم يعرض نسب كل تقييم من 1 إلى 5
 const RatingBreakdown = styled.div`
   display: flex;
   flex-direction: column;
@@ -119,6 +136,8 @@ const RatingLabel = styled.span`
   min-width: 60px;
 `;
 
+// RatingBar: Base track for the animated fill bar
+// شريط أساسي يُملأ بنسبة التقييم
 const RatingBar = styled.div`
   flex: 1;
   height: 8px;
@@ -127,6 +146,8 @@ const RatingBar = styled.div`
   overflow: hidden;
 `;
 
+// RatingFill: Animated width representing rating percentage per row
+// الشريط المملوء الذي تتغير مساحته حسب النسبة المئوية
 const RatingFill = styled.div`
   height: 100%;
   background: ${({ theme }) => theme.colors.warning};
@@ -167,13 +188,29 @@ const NoReviews = styled.div`
   }
 `;
 
+/**
+ * ReviewList Component
+ *
+ * @param {number} productId - معرف المنتج المرتبط بالمراجعات
+ * @param {Array} reviews - مصفوفة المراجعات المتاحة
+ * @param {Function} onAddReview - Callback عند إضافة مراجعة جديدة
+ */
 const ReviewList = ({ productId, reviews = [], onAddReview }) => {
+  // showForm: Toggles the review form visibility
+  // حالة إظهار/إخفاء نموذج إضافة المراجعة
   const [showForm, setShowForm] = useState(false);
+  // sortBy: Current sorting strategy (newest, helpful, etc.)
+  // معيار الترتيب الحالي للمراجعات
   const [sortBy, setSortBy] = useState('newest');
+  // filterBy: Selected rating filter (all, 5, 4...)
+  // الفلتر المستخدم لعرض تقييم معين
   const [filterBy, setFilterBy] = useState('all');
+  // visibleReviews: Pagination counter for "load more" button
+  // عدد المراجعات المعروضة حالياً (يزيد بخمس كل مرة)
   const [visibleReviews, setVisibleReviews] = useState(5);
 
-  // Calculate review statistics
+  // reviewStats: memoized calculations for averages + breakdown to avoid re-computation
+  // إحصائيات المراجعات: تحسب المتوسط وإجمالي المراجعات وتوزيع النجوم باستخدام useMemo
   const reviewStats = useMemo(() => {
     if (reviews.length === 0) {
       return {
@@ -198,17 +235,20 @@ const ReviewList = ({ productId, reviews = [], onAddReview }) => {
     };
   }, [reviews]);
 
-  // Filter and sort reviews
+  // filteredAndSortedReviews: Advanced pipeline (filter by stars → sort by strategy)
+  // قائمة المراجعات بعد الفلترة والترتيب حسب الإعدادات الحالية
   const filteredAndSortedReviews = useMemo(() => {
     let filtered = [...reviews];
 
     // Apply filter
+    // تطبيق الفلتر حسب عدد النجوم إن لم يكن "الكل"
     if (filterBy !== 'all') {
       const rating = parseInt(filterBy);
       filtered = filtered.filter(review => review.rating === rating);
     }
 
     // Apply sort
+    // ترتيب النتائج بناءً على القيمة المختارة (الأحدث، الأعلى...)
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'newest':
@@ -229,6 +269,12 @@ const ReviewList = ({ productId, reviews = [], onAddReview }) => {
     return filtered;
   }, [reviews, sortBy, filterBy]);
 
+  /**
+   * handleAddReview - إضافة مراجعة جديدة
+   * EN: Calls parent callback, awaits completion (for async persistence),
+   * then hides the form.
+   * AR: يستدعي الدالة الممررة من الأعلى وينتظر اكتمالها ثم يخفي النموذج.
+   */
   const handleAddReview = async (reviewData) => {
     if (onAddReview) {
       await onAddReview(reviewData);
@@ -236,10 +282,20 @@ const ReviewList = ({ productId, reviews = [], onAddReview }) => {
     setShowForm(false);
   };
 
+  /**
+   * handleLoadMore - تحميل المزيد
+   * EN: Extends visible list by 5 items to create chunked pagination.
+   * AR: يزيد عدد المراجعات المعروضة بمقدار خمسة مع كل ضغط.
+   */
   const handleLoadMore = () => {
     setVisibleReviews(prev => prev + 5);
   };
 
+  /**
+   * getPercentage - حساب النسبة المئوية
+   * EN: Safely returns 0 when total is zero to avoid NaN.
+   * AR: يعيد صفر إذا كان الإجمالي صفراً لتفادي القسمة على صفر.
+   */
   const getPercentage = (count, total) => {
     return total > 0 ? (count / total) * 100 : 0;
   };
@@ -354,6 +410,8 @@ const ReviewList = ({ productId, reviews = [], onAddReview }) => {
       )}
 
       <ReviewsList>
+        {/* Slice implements simple pagination without mutating the array */}
+        {/* القص هنا يحقق ترقيم الصفحات بشكل مبسط دون تغيير البيانات الأصلية */}
         {filteredAndSortedReviews.slice(0, visibleReviews).map((review, index) => (
           <ReviewCard
             key={review.id || index}

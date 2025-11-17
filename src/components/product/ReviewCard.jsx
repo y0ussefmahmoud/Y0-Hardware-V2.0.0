@@ -1,9 +1,18 @@
+/**
+ * ReviewCard Component - بطاقة المراجعة
+ * --------------------------------------------------------------
+ * Purpose (الغرض): Presents individual user reviews with rating, text,
+ * media, verification badge, and interactive actions.
+ * Usage (الاستخدام): Rendered by `ReviewList` for each review entry.
+ */
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FaThumbsUp, FaThumbsDown, FaFlag, FaUser } from 'react-icons/fa';
 import StarRating from '../common/StarRating';
 import Card from '../common/Card';
 
+// ReviewContainer: Card wrapper with hover shadow emphasis
+// حاوية المراجعة مع ظل متزايد عند التحويم
 const ReviewContainer = styled(Card)`
   padding: ${({ theme }) => theme.spacing.lg};
   margin-bottom: ${({ theme }) => theme.spacing.md};
@@ -32,6 +41,8 @@ const UserInfo = styled.div`
   gap: ${({ theme }) => theme.spacing.md};
 `;
 
+// UserAvatar: Gradient circle showing initials by default
+// صورة رمزية بخلفية متدرجة تظهر الأحرف الأولى افتراضياً
 const UserAvatar = styled.div`
   width: 48px;
   height: 48px;
@@ -89,6 +100,8 @@ const ReviewText = styled.p`
   white-space: pre-wrap;
 `;
 
+// ReviewImages: Flexible row of thumbnail previews
+// صف مرن لصور المراجعة المصغرة
 const ReviewImages = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
@@ -111,6 +124,8 @@ const ReviewImage = styled.img`
   }
 `;
 
+// ReviewFooter: Separates action buttons with border + spacing
+// تذييل يحتوي على أزرار التفاعل مع حد علوي
 const ReviewFooter = styled.div`
   display: flex;
   align-items: center;
@@ -125,6 +140,8 @@ const ReviewActions = styled.div`
   gap: ${({ theme }) => theme.spacing.md};
 `;
 
+// ActionButton: Styled toggle for helpful/unhelpful actions
+// زر مخصص لأزرار مفيد/غير مفيد
 const ActionButton = styled.button`
   display: flex;
   align-items: center;
@@ -163,6 +180,8 @@ const ReportButton = styled(ActionButton)`
   }
 `;
 
+// VerifiedBadge: Custom badge with pseudo checkmark for verified buyers
+// شارة المشتري الموثق مع علامة تحقق مخصصة
 const VerifiedBadge = styled.span`
   display: flex;
   align-items: center;
@@ -186,12 +205,23 @@ const VerifiedBadge = styled.span`
   }
 `;
 
+/**
+ * @param {Object} review - بيانات المراجعة
+ * @param {Function} [onLike] - Callback عند تفعيل زر مفيد
+ * @param {Function} [onDislike] - Callback عند تفعيل زر غير مفيد
+ * @param {Function} [onReport] - Callback عند الإبلاغ
+ */
 const ReviewCard = ({ review, onLike, onDislike, onReport }) => {
+  // liked/disliked: Local UI state until backend integration
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(review.likes || 0);
   const [dislikeCount, setDislikeCount] = useState(review.dislikes || 0);
 
+  /**
+   * handleLike - يدير منطق زر مفيد
+   * EN: Toggles like, ensures dislike is cleared, updates counters, notifies parent.
+   */
   const handleLike = () => {
     if (liked) {
       setLiked(false);
@@ -207,6 +237,10 @@ const ReviewCard = ({ review, onLike, onDislike, onReport }) => {
     if (onLike) onLike(review.id, !liked);
   };
 
+  /**
+   * handleDislike - يدير زر غير مفيد
+   * EN: Mirrors handleLike but for dislikes, keeping states mutually exclusive.
+   */
   const handleDislike = () => {
     if (disliked) {
       setDisliked(false);
@@ -222,10 +256,17 @@ const ReviewCard = ({ review, onLike, onDislike, onReport }) => {
     if (onDislike) onDislike(review.id, !disliked);
   };
 
+  /**
+   * handleReport - إرسال إبلاغ للمراجعة
+   * EN: Delegates to parent for API/report modal.
+   */
   const handleReport = () => {
     if (onReport) onReport(review.id);
   };
 
+  /**
+   * formatDate - ينسق تاريخ المراجعة باللغة العربية
+   */
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ar-EG', {
@@ -235,6 +276,9 @@ const ReviewCard = ({ review, onLike, onDislike, onReport }) => {
     });
   };
 
+  /**
+   * getUserInitials - استخراج الأحرف الأولى للاسم
+   */
   const getUserInitials = (name) => {
     return name
       .split(' ')

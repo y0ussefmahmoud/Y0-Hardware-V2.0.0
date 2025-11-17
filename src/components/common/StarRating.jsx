@@ -1,13 +1,23 @@
+/**
+ * StarRating Component - مكون التقييم بالنجوم
+ * --------------------------------------------------------------
+ * Purpose (الغرض): Displays read-only or interactive star ratings with
+ * optional descriptive text and review counts.
+ */
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FaStar } from 'react-icons/fa';
 
+// RatingContainer: Aligns stars and text on a single row
+// حاوية النجوم والنصوص المصاحبة في صف واحد
 const RatingContainer = styled.div`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xs};
 `;
 
+// StarButton: Handles hover/focus states for interactive ratings
+// زر النجمة الذي يتفاعل عند التمرير أو التركيز في الوضع التفاعلي
 const StarButton = styled.button`
   background: none;
   border: none;
@@ -25,6 +35,8 @@ const StarButton = styled.button`
   }
 `;
 
+// Star icon with dynamic sizing + color change when filled/hovered
+// أيقونة النجمة تتغير في الحجم واللون حسب الحالة
 const Star = styled(FaStar)`
   font-size: ${({ size }) => {
     switch (size) {
@@ -43,12 +55,23 @@ const Star = styled(FaStar)`
   transition: all ${({ theme }) => theme.transitions.fast};
 `;
 
+// RatingText: Optional summary text to the right of the stars
+// نص اختياري يظهر بجوار النجوم
 const RatingText = styled.span`
   font-size: ${({ theme }) => theme.fonts.sizes.sm};
   color: ${({ theme }) => theme.colors.text.secondary};
   margin-left: ${({ theme }) => theme.spacing.sm};
 `;
 
+/**
+ * @param {number} [rating=0] - التقييم الحالي
+ * @param {number} [maxRating=5] - أقصى عدد للنجوم
+ * @param {string} [size='medium'] - حجم النجوم (small/medium/large/xlarge)
+ * @param {boolean} [interactive=false] - تمكين التعديل من قبل المستخدم
+ * @param {boolean} [showText=false] - عرض النص بجانب النجوم
+ * @param {number} [reviewCount=0] - عدد المراجعات
+ * @param {Function} [onChange] - دالة تستدعى عند تغير التقييم
+ */
 const StarRating = ({
   rating = 0,
   maxRating = 5,
@@ -59,9 +82,15 @@ const StarRating = ({
   onChange,
   className
 }) => {
+  // hoveredRating: Stores preview rating when hovering in interactive mode
   const [hoveredRating, setHoveredRating] = useState(0);
+  // selectedRating: Local state mirroring user selection until persisted
   const [selectedRating, setSelectedRating] = useState(rating);
 
+  /**
+   * handleStarClick - تحديث التقييم عند النقر
+   * EN: Updates state + triggers onChange callback when interactive.
+   */
   const handleStarClick = (starRating) => {
     if (!interactive) return;
     
@@ -71,17 +100,25 @@ const StarRating = ({
     }
   };
 
+  /**
+   * handleStarHover - يعرض معاينة عند تمرير المؤشر
+   */
   const handleStarHover = (starRating) => {
     if (!interactive) return;
     setHoveredRating(starRating);
   };
 
+  /**
+   * handleMouseLeave - يعيد حالة المعاينة للوضع الافتراضي
+   */
   const handleMouseLeave = () => {
     if (!interactive) return;
     setHoveredRating(0);
   };
 
+  // displayRating: Chooses between selected vs provided rating
   const displayRating = interactive ? selectedRating : rating;
+  // Generate stars array so we can map to StarButton components
   const stars = Array.from({ length: maxRating }, (_, index) => {
     const starNumber = index + 1;
     const isFilled = starNumber <= displayRating;
@@ -94,7 +131,7 @@ const StarRating = ({
         onClick={() => handleStarClick(starNumber)}
         onMouseEnter={() => handleStarHover(starNumber)}
         type="button"
-        aria-label={`${starNumber} نجمة${starNumber > 1 ? '' : ''}`}
+        aria-label={`${starNumber} نجمة`}
       >
         <Star
           filled={isFilled}
@@ -105,6 +142,10 @@ const StarRating = ({
     );
   });
 
+  /**
+   * getRatingText - يبني النص المعروض بجانب النجوم
+   * EN: Prefers review count, otherwise shows rating summary or fallback.
+   */
   const getRatingText = () => {
     if (reviewCount > 0) {
       return `(${reviewCount} تقييم)`;

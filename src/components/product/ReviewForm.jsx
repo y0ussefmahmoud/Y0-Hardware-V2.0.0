@@ -1,3 +1,9 @@
+/**
+ * ReviewForm Component - نموذج إضافة مراجعة
+ * --------------------------------------------------------------
+ * Purpose (الغرض): Collects star ratings, textual feedback, and optional
+ * media uploads with validation + drag-and-drop support.
+ */
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FaCamera, FaTimes, FaPaperPlane } from 'react-icons/fa';
@@ -6,6 +12,7 @@ import StarRating from '../common/StarRating';
 import Button from '../common/Button';
 import Card from '../common/Card';
 
+// FormContainer: Card wrapper with consistent spacing for the form
 const FormContainer = styled(Card)`
   padding: ${({ theme }) => theme.spacing.xl};
   margin-bottom: ${({ theme }) => theme.spacing.xl};
@@ -81,6 +88,7 @@ const FormTextarea = styled.textarea`
   }
 `;
 
+// RatingSection: Highlight block for the interactive star rating
 const RatingSection = styled.div`
   display: flex;
   flex-direction: column;
@@ -103,6 +111,7 @@ const RatingDescription = styled.span`
   text-align: center;
 `;
 
+// ImageUploadSection: Drag-and-drop friendly dashed area
 const ImageUploadSection = styled.div`
   border: 2px dashed ${({ theme }) => theme.colors.border.primary};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
@@ -144,6 +153,7 @@ const ImagePreview = styled.div`
   margin-top: ${({ theme }) => theme.spacing.md};
 `;
 
+// PreviewImage: Thumbnail with overlay remove button
 const PreviewImage = styled.div`
   position: relative;
   width: 100px;
@@ -196,6 +206,7 @@ const FormActions = styled.div`
   }
 `;
 
+// CharacterCount: Turns red when remaining characters < 50
 const CharacterCount = styled.span`
   font-size: ${({ theme }) => theme.fonts.sizes.xs};
   color: ${({ limit, theme }) => 
@@ -205,20 +216,30 @@ const CharacterCount = styled.span`
   margin-top: ${({ theme }) => theme.spacing.xs};
 `;
 
+/**
+ * @param {number} productId - معرف المنتج للمراجعة
+ * @param {Function} onSubmit - دالة تُستدعى بعد نجاح الإرسال
+ * @param {Function} [onCancel] - دالة لإلغاء النموذج
+ */
 const ReviewForm = ({ productId, onSubmit, onCancel }) => {
   const { success, error } = useNotification();
+  // formData: Controlled form fields (rating/title/comment/images)
   const [formData, setFormData] = useState({
     rating: 0,
     title: '',
     comment: '',
     images: []
   });
+  // isSubmitting: Prevents duplicate submissions and shows loading state
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // dragOver: Visual feedback for drag-and-drop uploads
   const [dragOver, setDragOver] = useState(false);
 
+  // Validation limits
   const maxCommentLength = 1000;
   const maxImages = 5;
 
+  // handleInputChange: updates text inputs while keeping other fields intact
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -227,6 +248,7 @@ const ReviewForm = ({ productId, onSubmit, onCancel }) => {
     }));
   };
 
+  // handleRatingChange: receives new rating from StarRating callback
   const handleRatingChange = (rating) => {
     setFormData(prev => ({
       ...prev,
@@ -234,6 +256,10 @@ const ReviewForm = ({ productId, onSubmit, onCancel }) => {
     }));
   };
 
+  /**
+   * handleImageUpload - process dropped/selected files
+   * AR: يتحقق من نوع الملف والعدد ثم يولد معاينة باستخدام FileReader.
+   */
   const handleImageUpload = (files) => {
     const newImages = Array.from(files).slice(0, maxImages - formData.images.length);
     
@@ -282,6 +308,9 @@ const ReviewForm = ({ productId, onSubmit, onCancel }) => {
     }));
   };
 
+  /**
+   * handleSubmit - validates inputs then triggers parent callback
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     

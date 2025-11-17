@@ -1,3 +1,9 @@
+/**
+ * Contact Page - صفحة التواصل
+ * --------------------------------------------------------------
+ * Purpose (الغرض): Provide contact info cards, social links, a contact form,
+ * and placeholder map for reaching the company.
+ */
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { 
@@ -15,6 +21,7 @@ import { useNotification } from '../context/NotificationContext';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
 
+// ContactContainer: Centers page content with consistent padding
 const ContactContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
@@ -43,6 +50,7 @@ const PageDescription = styled.p`
   line-height: 1.6;
 `;
 
+// ContactLayout: Two-column grid (info + form) stacking on mobile
 const ContactLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -60,6 +68,7 @@ const ContactInfo = styled.div`
   gap: ${({ theme }) => theme.spacing.xl};
 `;
 
+// InfoCard: Hoverable card for each contact channel
 const InfoCard = styled(Card)`
   padding: ${({ theme }) => theme.spacing.xl};
   transition: all ${({ theme }) => theme.transitions.normal};
@@ -117,6 +126,7 @@ const SocialLinks = styled.div`
   margin-top: ${({ theme }) => theme.spacing.lg};
 `;
 
+// SocialLink: Changes color based on platform to reinforce branding
 const SocialLink = styled.a`
   display: flex;
   align-items: center;
@@ -148,6 +158,7 @@ const SocialLink = styled.a`
   }
 `;
 
+// ContactForm: Vertical stack of rows/inputs for message submission
 const ContactForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -177,6 +188,7 @@ const FormLabel = styled.label`
   font-size: ${({ theme }) => theme.fonts.sizes.base};
 `;
 
+// FormInput: Reusable stylings for input fields with focus glow
 const FormInput = styled.input`
   padding: ${({ theme }) => theme.spacing.md};
   border: 2px solid ${({ theme }) => theme.colors.border.primary};
@@ -242,6 +254,7 @@ const MapTitle = styled.h2`
   margin-bottom: ${({ theme }) => theme.spacing.xl};
 `;
 
+// MapContainer: Placeholder block until an interactive map is integrated
 const MapContainer = styled.div`
   width: 100%;
   height: 400px;
@@ -257,6 +270,7 @@ const MapContainer = styled.div`
 
 const Contact = () => {
   const { success, error } = useNotification();
+  // formData: Controlled fields for the contact form inputs
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -264,8 +278,13 @@ const Contact = () => {
     subject: '',
     message: ''
   });
+  // isSubmitting: Locks the form while simulating API submission
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  /**
+   * handleInputChange - تحديث الحقول النصية
+   * EN: Keeps controlled inputs synced with state.
+   */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -274,6 +293,10 @@ const Contact = () => {
     }));
   };
 
+  /**
+   * handleSubmit - إرسال نموذج التواصل
+   * EN: Validates required fields, simulates async call, and resets form.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -303,6 +326,7 @@ const Contact = () => {
     }
   };
 
+  // contactInfo: Structured list of info cards (icon + title + details)
   const contactInfo = [
     {
       icon: <FaPhone />,
@@ -363,6 +387,7 @@ const Contact = () => {
                 ))}
               </InfoDetails>
               {index === 0 && (
+                /* Placeholder social links (replace hrefs with real profiles) */
                 <SocialLinks>
                   <SocialLink href="#" platform="facebook" aria-label="Facebook">
                     <FaFacebook />
@@ -466,6 +491,7 @@ const Contact = () => {
       <MapSection>
         <MapTitle>موقعنا على الخريطة</MapTitle>
         <MapContainer>
+          {/* TODO: Replace placeholder with Google Maps iframe or Leaflet component */}
           <div>
             <FaMapMarkerAlt style={{ fontSize: '3rem', marginBottom: '1rem' }} />
             <br />

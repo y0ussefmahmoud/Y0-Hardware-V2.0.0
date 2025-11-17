@@ -1,3 +1,11 @@
+/**
+ * Shop Page - صفحة المتجر
+ * --------------------------------------------------------------
+ * Purpose (الغرض): Provides advanced filtering, searching, sorting,
+ * and grid/list presentation for the entire product catalog.
+ * Features (المميزات): URL-driven filters, multi-criteria search,
+ * responsive layouts, and informative empty states.
+ */
 import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ShopSEO } from '../components/common/SEO';
@@ -108,6 +116,8 @@ const ViewButton = styled.button`
   }
 `;
 
+// ShopContent: Two-column layout (sidebar + results) collapsing on mobile
+// تخطيط بعمودين يتحول إلى عمود واحد على الشاشات الصغيرة
 const ShopContent = styled.div`
   display: grid;
   grid-template-columns: 250px 1fr;
@@ -118,6 +128,8 @@ const ShopContent = styled.div`
   }
 `;
 
+// Sidebar: Moves below results on mobile to prioritize products
+// الشريط الجانبي ينتقل أسفل النتائج عند تصغير الشاشة
 const Sidebar = styled.aside`
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     order: 2;
@@ -245,6 +257,8 @@ const SortSelect = styled.select`
   }
 `;
 
+// ProductsGrid: Switches between responsive grid and single-column list
+// شبكة المنتجات تتكيف بين العرض الشبكي والقائمة بناءً على viewMode
 const ProductsGrid = styled.div`
   display: grid;
   grid-template-columns: ${({ viewMode }) => 
@@ -262,10 +276,20 @@ const NoResults = styled.div`
 `;
 
 const Shop = () => {
+  // useSearchParams: syncs search/filter state with URL for shareable views
+  // استخدام useSearchParams لقراءة (ويمكن لاحقاً كتابة) معاملات العنوان
   const [searchParams, setSearchParams] = useSearchParams();
+  // viewMode: grid or list toggle
+  // وضع العرض الحالي (شبكي/قائمة)
   const [viewMode, setViewMode] = useState('grid');
+  // searchQuery: pre-filled from URL `?search=` parameter
+  // نص البحث الذي يتم تعبئته مبدئياً من البارامتر search
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
+  // sortBy: determines ordering method for filtered results
+  // معيار الترتيب (الاسم، السعر، التقييم...)
   const [sortBy, setSortBy] = useState('name');
+  // filters: Object capturing all filter toggles/settings
+  // كائن يحوي كل الفلاتر (الفئة، السعر، التوفر...)
   const [filters, setFilters] = useState({
     category: searchParams.get('category') || '',
     subcategory: '',
@@ -277,10 +301,13 @@ const Shop = () => {
     usedOnly: false,
   });
 
+  // filteredProducts: useMemo pipeline for search + filters + sorting
+  // مصفاة شاملة للمنتجات تعتمد على useMemo لعدم إعادة الحساب دون داعٍ
   const filteredProducts = useMemo(() => {
     let filtered = [...productsDatabase];
 
     // Search filter
+    // فلترة بالاسم أو الوصف (حساس لحروف عربية/إنجليزية)
     if (searchQuery) {
       filtered = filtered.filter(product =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -327,6 +354,7 @@ const Shop = () => {
     }
 
     // Sort
+    // الترتيب النهائي حسب الاختيار، مع localeCompare لدعم اللغة العربية
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'price-low':
@@ -345,10 +373,17 @@ const Shop = () => {
     return filtered;
   }, [searchQuery, filters, sortBy]);
 
+  /**
+   * handleFilterChange - تحديث الفلاتر
+   * EN: Keeps state immutable by spreading previous filters and overriding key.
+   * AR: يحدث الفلتر المطلوب مع الحفاظ على بقية القيم دون تعديل مباشر.
+   */
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 
+  // uniqueBrands/subcategories: derived lists for select options
+  // استخراج الأسماء الفريدة للماركات والفئات الفرعية
   const uniqueBrands = [...new Set(productsDatabase.map(p => p.brand))];
   const uniqueSubcategories = [...new Set(productsDatabase.map(p => p.subcategory))];
 
@@ -510,6 +545,8 @@ const Shop = () => {
               ))}
             </ProductsGrid>
           ) : (
+            // NoResults: Friendly guidance when filters/search return nothing
+            // حالة عدم العثور على منتجات - رسالة إرشادية للمستخدم
             <NoResults>
               <h3>لم يتم العثور على منتجات</h3>
               <p>جرب تغيير معايير البحث أو التصفية</p>

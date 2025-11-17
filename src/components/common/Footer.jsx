@@ -1,3 +1,12 @@
+/**
+ * Footer Component - التذييل العام للموقع
+ * ---------------------------------------------------------------
+ * Purpose (الغرض): Displays company info, quick links, categories,
+ * and contact details at the bottom of every page.
+ * Layout (البنية): Four-section responsive grid with social links
+ * and bottom bar including legal + location info.
+ * Usage (الاستخدام): Imported inside `App.jsx` and rendered once per view.
+ */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -14,6 +23,8 @@ import {
   FaHeart
 } from 'react-icons/fa';
 
+// FooterContainer: Uses margin-top:auto to push footer to the bottom when content is short
+// الحاوية الرئيسية تستخدم margin-top:auto لضمان بقاء التذييل في الأسفل
 const FooterContainer = styled.footer`
   background: ${({ theme }) => theme.colors.background.secondary};
   border-top: 1px solid ${({ theme }) => theme.colors.border.primary};
@@ -30,6 +41,8 @@ const FooterContent = styled.div`
   }
 `;
 
+// FooterGrid: Responsive grid (4 columns shrinking to single column on phones)
+// شبكة مرنة تتحول من أربعة أعمدة إلى عمود واحد على الهواتف
 const FooterGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -99,6 +112,8 @@ const SocialLinks = styled.div`
   margin-top: ${({ theme }) => theme.spacing.md};
 `;
 
+// SocialLink: Hover elevates tile + swaps colors for better affordance
+// رابط السوشيال مع تأثير تحويم يغير اللون ويرفع العنصر قليلاً
 const SocialLink = styled.a`
   display: flex;
   align-items: center;
@@ -122,6 +137,8 @@ const SocialLink = styled.a`
   }
 `;
 
+// FooterBottom: Flex container to keep copyright + slogans aligned
+// شريط سفلي يستخدم Flex لتنظيم النصوص والأيقونات
 const FooterBottom = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.border.primary};
   padding-top: ${({ theme }) => theme.spacing.lg};
@@ -137,6 +154,8 @@ const FooterBottom = styled.div`
   }
 `;
 
+// Copyright: Displays legal text + heart icon inline
+// نص حقوق النشر مع أيقونة القلب ضمن السطر
 const Copyright = styled.p`
   color: ${({ theme }) => theme.colors.text.tertiary};
   font-size: ${({ theme }) => theme.fonts.sizes.sm};
@@ -150,6 +169,8 @@ const Copyright = styled.p`
   }
 `;
 
+// FooterLogo: Branding block reused in the footer intro section
+// شعار الشركة المستخدم في القسم الأول من التذييل
 const FooterLogo = styled.div`
   display: flex;
   align-items: center;
@@ -165,6 +186,8 @@ const FooterLogo = styled.div`
 `;
 
 const Footer = () => {
+  // currentYear: Keeps the footer date fresh automatically each year
+  // السنة الحالية لحفظ حقوق النشر بشكل ديناميكي
   const currentYear = new Date().getFullYear();
 
   return (
@@ -181,6 +204,8 @@ const Footer = () => {
               متجر Y0 Hardware المتخصص في بيع قطع الكمبيوتر واللابتوب والاكسسوارات 
               بأفضل الأسعار وأعلى جودة في السوق المصري.
             </FooterText>
+            {/* Social links placeholders - replace hrefs with real profiles later */}
+            {/* روابط تواصل اجتماعي وهمية حالياً حتى يتم إضافة الروابط الحقيقية */}
             <SocialLinks>
               <SocialLink href="#" aria-label="Facebook">
                 <FaFacebook />
@@ -201,6 +226,8 @@ const Footer = () => {
           <FooterSection>
             <FooterTitle>روابط سريعة</FooterTitle>
             <FooterList>
+              {/* createLink يحافظ على التوجيه الصحيح مع GitHub Pages */}
+              {/* createLink keeps URLs compatible with GitHub Pages deployments */}
               <li><FooterLink as="a" href={createLink('/')}>الرئيسية</FooterLink></li>
               <li><FooterLink as="a" href={createLink('/shop')}>المنتجات</FooterLink></li>
               <li><FooterLink as="a" href={createLink('/about')}>من نحن</FooterLink></li>
