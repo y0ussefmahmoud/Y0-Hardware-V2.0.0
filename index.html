@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/Y0-Hardware-V2.0.0/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Y0 Hardware - متجر قطع الكمبيوتر واللابتوب</title>
     <meta name="description" content="متجر Y0 Hardware المتخصص في بيع قطع الكمبيوتر واللابتوب والاكسسوارات بأفضل الأسعار">
@@ -12,7 +12,26 @@
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script type="module" crossorigin src="/Y0-Hardware-V2.0.0/assets/index-DTa5PR7b.js"></script>
+    
+    <!-- GitHub Pages optimization -->
+    <script>
+      // GitHub Pages SPA redirect handling
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect != location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+      
+      // Prevent FOUC (Flash of Unstyled Content)
+      document.documentElement.style.visibility = 'hidden';
+      window.addEventListener('DOMContentLoaded', function() {
+        document.documentElement.style.visibility = 'visible';
+      });
+    </script>
+    <script type="module" crossorigin src="/assets/index-BE-bAA5r.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-_QuxuOTk.css">
   </head>
   <body>
     <div id="root"></div>
