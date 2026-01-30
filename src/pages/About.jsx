@@ -1,366 +1,272 @@
 /**
- * About Page - صفحة من نحن
+ * About Page - صفحة عن المشروع
  * --------------------------------------------------------------
- * Purpose (الغرض): Share company story, stats, values, and team.
- * Sections (الأقسام): Hero intro, stats grid, story section, values grid,
- * and team showcase for trust-building.
+ * Purpose (الغرض): معلومات عن المشروع والتقنيات المستخدمة
+ * Sections (الأقسام): Hero, Description, Technologies, Features, Developer, API Providers, FAQ
+ * 
+ * @author Y0ussefMahmoud
+ * @version 1.0.0
  */
+
 import React from 'react';
-import styled from 'styled-components';
-import { 
-  FaRocket, 
-  FaUsers, 
-  FaAward, 
-  FaHeart,
-  FaShieldAlt,
-  FaTruck,
-  FaHeadset,
-  FaStar
-} from 'react-icons/fa';
-import Card from '../components/common/Card';
+import { FiGithub, FiLinkedin, FiTwitter, FiMail, FiExternalLink } from 'react-icons/fi';
 
-// AboutContainer: Centers page content with generous padding
-const AboutContainer = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing.xl} ${({ theme }) => theme.spacing.lg};
-  min-height: calc(100vh - 160px);
-`;
-
-// HeroSection: Gradient hero block introducing the company
-const HeroSection = styled.section`
-  text-align: center;
-  padding: ${({ theme }) => theme.spacing['3xl']} 0;
-  background: linear-gradient(
-    135deg,
-    ${({ theme }) => theme.colors.primary}10 0%,
-    ${({ theme }) => theme.colors.secondary}10 100%
-  );
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  margin-bottom: ${({ theme }) => theme.spacing['3xl']};
-`;
-
-const HeroTitle = styled.h1`
-  font-size: ${({ theme }) => theme.fonts.sizes['4xl']};
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fonts.sizes['3xl']};
-  }
-`;
-
-const HeroSubtitle = styled.p`
-  font-size: ${({ theme }) => theme.fonts.sizes.xl};
-  color: ${({ theme }) => theme.colors.text.secondary};
-  max-width: 600px;
-  margin: 0 auto ${({ theme }) => theme.spacing.xl};
-  line-height: 1.6;
-`;
-
-// StatsGrid: Auto-fit cards to highlight company KPIs
-const StatsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: ${({ theme }) => theme.spacing.lg};
-  margin: ${({ theme }) => theme.spacing['3xl']} 0;
-`;
-
-// StatCard: Hoverable card used for each stat metric
-const StatCard = styled(Card)`
-  text-align: center;
-  padding: ${({ theme }) => theme.spacing.xl};
-  background: ${({ theme }) => theme.colors.background.card};
-  border: 2px solid transparent;
-  transition: all ${({ theme }) => theme.transitions.normal};
-  
-  &:hover {
-    border-color: ${({ theme }) => theme.colors.primary};
-    transform: translateY(-4px);
-  }
-`;
-
-const StatIcon = styled.div`
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary});
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto ${({ theme }) => theme.spacing.md};
-  
-  svg {
-    font-size: ${({ theme }) => theme.fonts.sizes['2xl']};
-    color: ${({ theme }) => theme.colors.text.inverse};
-  }
-`;
-
-const StatNumber = styled.h3`
-  font-size: ${({ theme }) => theme.fonts.sizes['2xl']};
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
-  color: ${({ theme }) => theme.colors.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-`;
-
-const StatLabel = styled.p`
-  color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: ${({ theme }) => theme.fonts.sizes.base};
-  margin: 0;
-`;
-
-const Section = styled.section`
-  margin-bottom: ${({ theme }) => theme.spacing['3xl']};
-`;
-
-const SectionTitle = styled.h2`
-  font-size: ${({ theme }) => theme.fonts.sizes['3xl']};
-  font-weight: ${({ theme }) => theme.fonts.weights.semibold};
-  color: ${({ theme }) => theme.colors.text.primary};
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-`;
-
-const ContentGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: ${({ theme }) => theme.spacing.xl};
-  align-items: start;
-`;
-
-const ContentCard = styled(Card)`
-  padding: ${({ theme }) => theme.spacing.xl};
-  height: 100%;
-`;
-
-const CardIcon = styled.div`
-  width: 50px;
-  height: 50px;
-  background: ${({ theme }) => theme.colors.primary}20;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-  
-  svg {
-    font-size: ${({ theme }) => theme.fonts.sizes.xl};
-    color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
-const CardTitle = styled.h3`
-  font-size: ${({ theme }) => theme.fonts.sizes.xl};
-  font-weight: ${({ theme }) => theme.fonts.weights.semibold};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-`;
-
-const CardDescription = styled.p`
-  color: ${({ theme }) => theme.colors.text.secondary};
-  line-height: 1.6;
-  margin: 0;
-`;
-
-// StorySection: Soft background area for company narrative
-const StorySection = styled.div`
-  background: ${({ theme }) => theme.colors.background.secondary};
-  padding: ${({ theme }) => theme.spacing['3xl']};
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  margin: ${({ theme }) => theme.spacing['3xl']} 0;
-`;
-
-const StoryContent = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
-`;
-
-const StoryText = styled.p`
-  font-size: ${({ theme }) => theme.fonts.sizes.lg};
-  color: ${({ theme }) => theme.colors.text.secondary};
-  line-height: 1.8;
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-`;
-
-const TeamGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: ${({ theme }) => theme.spacing.xl};
-`;
-
-// TeamCard: Animated card for each team member
-const TeamCard = styled(Card)`
-  text-align: center;
-  padding: ${({ theme }) => theme.spacing.xl};
-  transition: all ${({ theme }) => theme.transitions.normal};
-  
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 16px 32px ${({ theme }) => theme.colors.shadow.medium};
-  }
-`;
-
-// TeamAvatar: Gradient circle showing member initials
-const TeamAvatar = styled.div`
-  width: 100px;
-  height: 100px;
-  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary});
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto ${({ theme }) => theme.spacing.lg};
-  font-size: ${({ theme }) => theme.fonts.sizes['3xl']};
-  color: ${({ theme }) => theme.colors.text.inverse};
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
-`;
-
-const TeamName = styled.h3`
-  font-size: ${({ theme }) => theme.fonts.sizes.xl};
-  font-weight: ${({ theme }) => theme.fonts.weights.semibold};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-`;
-
-const TeamRole = styled.p`
-  color: ${({ theme }) => theme.colors.primary};
-  font-weight: ${({ theme }) => theme.fonts.weights.medium};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-`;
-
-const TeamDescription = styled.p`
-  color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: ${({ theme }) => theme.fonts.sizes.sm};
-  line-height: 1.5;
-  margin: 0;
-`;
-
+/**
+ * About Component
+ * 
+ * يعرض صفحة "عن المشروع" مع:
+ * - وصف المشروع
+ * - التقنيات المستخدمة
+ * - المميزات
+ * - معلومات المطور
+ * - معلومات API Providers
+ * - أسئلة شائعة
+ */
 const About = () => {
-  // stats: Highlight quick achievements (clients, experience, etc.)
-  const stats = [
-    { icon: <FaUsers />, number: '10,000+', label: 'عميل راضٍ' },
-    { icon: <FaAward />, number: '5+', label: 'سنوات خبرة' },
-    { icon: <FaStar />, number: '4.9', label: 'تقييم العملاء' },
-    { icon: <FaRocket />, number: '50,000+', label: 'منتج مباع' },
-  ];
-
-  // values: Core principles presented in cards
-  const values = [
-    {
-      icon: <FaShieldAlt />,
-      title: 'الجودة والثقة',
-      description: 'نحن ملتزمون بتقديم منتجات أصلية عالية الجودة من أفضل الماركات العالمية مع ضمان شامل على جميع المنتجات.'
-    },
-    {
-      icon: <FaTruck />,
-      title: 'التوصيل السريع',
-      description: 'نوفر خدمة توصيل سريعة وآمنة في جميع أنحاء مصر مع إمكانية التتبع المباشر لطلبك حتى وصوله إليك.'
-    },
-    {
-      icon: <FaHeadset />,
-      title: 'الدعم المتميز',
-      description: 'فريق دعم فني متخصص متاح 24/7 لمساعدتك في اختيار المنتجات المناسبة وحل أي مشاكل تقنية قد تواجهها.'
-    },
-    {
-      icon: <FaHeart />,
-      title: 'رضا العملاء',
-      description: 'هدفنا الأول هو رضا عملائنا، لذلك نسعى دائماً لتقديم أفضل خدمة وأسعار تنافسية مع ضمان الجودة.'
-    }
-  ];
-
-  // team: Placeholder data for key team members (could swap with CMS)
-  const team = [
-    {
-      name: 'يوسف محمود',
-      role: 'المؤسس والمدير التنفيذي',
-      description: 'خبرة أكثر من 10 سنوات في مجال التكنولوجيا وقطع الكمبيوتر',
-      avatar: 'ي'
-    },
-    {
-      name: 'أحمد علي',
-      role: 'مدير المبيعات',
-      description: 'متخصص في استشارات الأجهزة وحلول الألعاب',
-      avatar: 'أ'
-    },
-    {
-      name: 'فاطمة حسن',
-      role: 'مديرة خدمة العملاء',
-      description: 'خبيرة في تقديم الدعم الفني وحل مشاكل العملاء',
-      avatar: 'ف'
-    },
-    {
-      name: 'محمد سعد',
-      role: 'مدير التقنية',
-      description: 'مطور ومصمم الموقع الإلكتروني وأنظمة الإدارة',
-      avatar: 'م'
-    }
-  ];
-
   return (
-    <AboutContainer>
-      <HeroSection>
-        <HeroTitle>من نحن</HeroTitle>
-        <HeroSubtitle>
-          Y0 Hardware هو متجرك الموثوق لقطع الكمبيوتر واللابتوب والاكسسوارات في مصر. 
-          نحن نقدم أحدث التقنيات بأفضل الأسعار مع خدمة عملاء متميزة.
-        </HeroSubtitle>
-      </HeroSection>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Hero Section - قسم البطل */}
+        <section className="text-center mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            عن Y0 AI Code Generator
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            منصة ذكية لتوليد الأكواد والتطبيقات باستخدام الذكاء الاصطناعي
+          </p>
+        </section>
 
-      {/* Map over stats array to render KPI cards */}
-      <StatsGrid>
-        {stats.map((stat, index) => (
-          <StatCard key={index}>
-            <StatIcon>{stat.icon}</StatIcon>
-            <StatNumber>{stat.number}</StatNumber>
-            <StatLabel>{stat.label}</StatLabel>
-          </StatCard>
-        ))}
-      </StatsGrid>
+        {/* Project Description - وصف المشروع */}
+        <section className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            ما هو المشروع؟
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+            Y0 AI Code Generator هو تطبيق ويب متقدم يسمح للمطورين بتحويل أفكارهم البرمجية إلى أكواد جاهزة
+            باستخدام قوة الذكاء الاصطناعي. بدلاً من قضاء ساعات في كتابة الكود من الصفر، يمكنك الآن
+            وصف فكرتك والحصول على كود برمجي كامل ومنظم في دقائق.
+          </p>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 mt-6">
+            الأهداف والرؤية
+          </h3>
+          <ul className="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2">
+            <li>تسريع عملية تطوير البرمجيات</li>
+            <li>جعل البرمجة أكثر سهولة للمبتدئين</li>
+            <li>توفير الوقت والجهد للمطورين المحترفين</li>
+            <li>دعم متعدد للغات البرمجة ومزودي AI</li>
+          </ul>
+        </section>
 
-      <StorySection>
-        <StoryContent>
-          <SectionTitle>قصتنا</SectionTitle>
-          <StoryText>
-            بدأت Y0 Hardware في عام 2019 كحلم بسيط لتوفير قطع الكمبيوتر عالية الجودة بأسعار معقولة للجميع. 
-            من خلال شغفنا بالتكنولوجيا وفهمنا العميق لاحتياجات العملاء، تمكنا من بناء علاقات قوية مع أفضل 
-            الموردين والماركات العالمية.
-          </StoryText>
-          <StoryText>
-            اليوم، نحن فخورون بخدمة أكثر من 10,000 عميل راضٍ في جميع أنحاء مصر، ونواصل نموّنا وتطويرنا 
-            لنكون الخيار الأول لكل من يبحث عن التميز في عالم التكنولوجيا.
-          </StoryText>
-        </StoryContent>
-      </StorySection>
+        {/* Technologies Section - قسم التقنيات */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-8">
+            التقنيات المستخدمة
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { name: 'React 18.2.0', icon: '⚛️', description: 'مكتبة JavaScript لبناء واجهات المستخدم' },
+              { name: 'Vite 5.0.8', icon: '⚡', description: 'أداة بناء سريعة وحديثة' },
+              { name: 'Tailwind CSS 3.4.0', icon: '🎨', description: 'إطار عمل CSS للتصميم السريع' },
+              { name: 'React Router v6', icon: '🛣️', description: 'مكتبة التوجيه للصفحات' },
+              { name: 'OpenAI API', icon: '🤖', description: 'API لتوليد الأكواد باستخدام GPT-4' },
+              { name: 'Claude API', icon: '🧠', description: 'API من Anthropic لتوليد الأكواد' },
+              { name: 'Gemini API', icon: '✨', description: 'API من Google لتوليد الأكواد' },
+              { name: 'Prism.js', icon: '🌈', description: 'مكتبة تمييز الأكواد' },
+              { name: 'JSZip', icon: '📦', description: 'مكتبة توليد ملفات ZIP' }
+            ].map((tech, index) => (
+              <div
+                key={index}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6"
+              >
+                <div className="text-4xl mb-3">{tech.icon}</div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  {tech.name}
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {tech.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
 
-      <Section>
-        <SectionTitle>قيمنا ومبادئنا</SectionTitle>
-        <ContentGrid>
-          {values.map((value, index) => (
-            <ContentCard key={index}>
-              <CardIcon>{value.icon}</CardIcon>
-              <CardTitle>{value.title}</CardTitle>
-              <CardDescription>{value.description}</CardDescription>
-            </ContentCard>
-          ))}
-        </ContentGrid>
-      </Section>
+        {/* Features Section - قسم المميزات */}
+        <section className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            المميزات الرئيسية
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              'دعم متعدد لمزودي AI (OpenAI, Claude, Gemini)',
+              'دعم 10+ لغة برمجة',
+              'محرر أكواد متقدم مع تمييز الأكواد',
+              'حفظ المشاريع محلياً',
+              'تحميل المشاريع كملفات ZIP',
+              'مشاركة المشاريع مع الآخرين',
+              'واجهة مستخدم جميلة ومتجاوبة',
+              'دعم الوضع الليلي/النهاري',
+              'دعم كامل للغة العربية'
+            ].map((feature, index) => (
+              <div key={index} className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="text-gray-600 dark:text-gray-400">{feature}</span>
+              </div>
+            ))}
+          </div>
+        </section>
 
-      <Section>
-        <SectionTitle>فريق العمل</SectionTitle>
-        <TeamGrid>
-          {team.map((member, index) => (
-            <TeamCard key={index}>
-              <TeamAvatar>{member.avatar}</TeamAvatar>
-              <TeamName>{member.name}</TeamName>
-              <TeamRole>{member.role}</TeamRole>
-              <TeamDescription>{member.description}</TeamDescription>
-            </TeamCard>
-          ))}
-        </TeamGrid>
-      </Section>
-    </AboutContainer>
+        {/* Developer Section - قسم المطور */}
+        <section className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            المطور
+          </h2>
+          <div className="text-center">
+            <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
+              ي
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              Y0ussefMahmoud
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              مطور برمجيات متخصص في تطوير تطبيقات الويب والذكاء الاصطناعي
+            </p>
+            <div className="flex justify-center space-x-4 rtl:space-x-reverse">
+              <a
+                href="https://github.com/y0ussefmahmoud"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                aria-label="GitHub"
+              >
+                <FiGithub className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+              </a>
+              <a
+                href="https://linkedin.com/in/y0ussefmahmoud"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                aria-label="LinkedIn"
+              >
+                <FiLinkedin className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+              </a>
+              <a
+                href="https://twitter.com/y0ussefmahmoud"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                aria-label="Twitter"
+              >
+                <FiTwitter className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+              </a>
+              <a
+                href="mailto:info@y0hardware.com"
+                className="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                aria-label="Email"
+              >
+                <FiMail className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* API Providers Section - قسم مزودي API */}
+        <section className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            مزودو API المدعومون
+          </h2>
+          <div className="space-y-6">
+            {[
+              {
+                name: 'OpenAI',
+                description: 'مزود AI قوي مع GPT-4 و GPT-3.5',
+                link: 'https://platform.openai.com/api-keys',
+                features: ['GPT-4', 'GPT-3.5-turbo', 'أداء عالي']
+              },
+              {
+                name: 'Anthropic Claude',
+                description: 'مزود AI متقدم من Anthropic',
+                link: 'https://console.anthropic.com/settings/keys',
+                features: ['Claude 3 Opus', 'أمان عالي', 'أداء ممتاز']
+              },
+              {
+                name: 'Google Gemini',
+                description: 'مزود AI من Google',
+                link: 'https://makersuite.google.com/app/apikey',
+                features: ['Gemini Pro', 'مجاني', 'سهل الاستخدام']
+              }
+            ].map((provider, index) => (
+              <div key={index} className="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-0">
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      {provider.name}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      {provider.description}
+                    </p>
+                  </div>
+                  <a
+                    href={provider.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline flex items-center"
+                  >
+                    احصل على API Key
+                    <FiExternalLink className="w-4 h-4 mr-1" />
+                  </a>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {provider.features.map((feature, idx) => (
+                    <span
+                      key={idx}
+                      className="px-3 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-full text-sm"
+                    >
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* FAQ Section - قسم الأسئلة الشائعة */}
+        <section className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            أسئلة شائعة
+          </h2>
+          <div className="space-y-6">
+            {[
+              {
+                question: 'كيف أحصل على API Key؟',
+                answer: 'يمكنك الحصول على API Key من الموقع الرسمي لكل مزود. انقر على "احصل على API Key" في قسم مزودي API أعلاه.'
+              },
+              {
+                question: 'هل البيانات آمنة؟',
+                answer: 'نعم، جميع البيانات (بما في ذلك API Keys) تُحفظ محلياً في متصفحك فقط. لا يتم إرسال أي بيانات لخوادم خارجية.'
+              },
+              {
+                question: 'ما هي اللغات المدعومة؟',
+                answer: 'نحن ندعم React, Vue, Python, Java, Node.js, PHP, Go, Rust, Unity (C#)، ويمكنك اختيار "تلقائي" لاختيار AI اللغة المناسبة.'
+              },
+              {
+                question: 'هل المشروع مجاني؟',
+                answer: 'نعم، المشروع مجاني تماماً. لكن استخدام APIs يتطلب API Keys من المزودين (بعضها مجاني وبعضها مدفوع).'
+              }
+            ].map((faq, index) => (
+              <div key={index}>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  {faq.question}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {faq.answer}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
   );
 };
 

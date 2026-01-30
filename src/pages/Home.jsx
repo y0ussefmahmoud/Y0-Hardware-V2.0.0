@@ -1,408 +1,302 @@
 /**
  * Home Page - الصفحة الرئيسية
  * --------------------------------------------------------------
- * Purpose (الغرض): Act as the landing experience with hero, features,
- * curated product rows, categories, and AI sections for discovery.
- * Sections (الأقسام): Hero, Features, Best Sellers, Featured Products,
- * Used Products, Categories, AI Recommendations, AI Chatbot.
- * SEO: Injects meta tags through `HomeSEO`.
+ * Purpose (الغرض): واجهة كاملة لتوليد الأكواد باستخدام AI
+ * Sections (الأقسام): Hero, IdeaForm, Code Display, Features, How It Works
+ * 
+ * @author Y0ussefMahmoud
+ * @version 1.0.0
  */
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { HomeSEO } from '../components/common/SEO';
-import styled from 'styled-components';
-import { FaArrowLeft, FaShippingFast, FaShieldAlt, FaHeadset, FaTrophy } from 'react-icons/fa';
-import { productsDatabase } from '../data/products';
-import ProductCard from '../components/product/ProductCard';
-import Button from '../components/common/Button';
-import AIRecommendations from '../components/ai/AIRecommendations';
-import AIChatbot from '../components/ai/AIChatbot';
-import Card from '../components/common/Card';
-import { createLink } from '../utils/router';
 
-const HomeContainer = styled.div`
-  min-height: calc(100vh - 160px);
-`;
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import IdeaForm from '../components/forms/IdeaForm';
+import CodeEditor from '../components/code/CodeEditor';
+import { useProject } from '../context/ProjectContext';
+import { generateZip } from '../utils/zipGenerator';
+import { FiDownload, FiCopy, FiShare2, FiSave, FiCheck } from 'react-icons/fi';
 
-// HeroSection: Gradient backdrop with generous padding for the hero
-// قسم البطل مع خلفية متدرجة ومساحات واسعة
-const HeroSection = styled.section`
-  background: linear-gradient(
-    135deg,
-    ${({ theme }) => theme.colors.primary}20 0%,
-    ${({ theme }) => theme.colors.secondary}20 100%
-  );
-  padding: ${({ theme }) => theme.spacing['3xl']} 0;
-  margin-bottom: ${({ theme }) => theme.spacing['3xl']};
-`;
-
-// HeroContent: Two-column grid collapsing to single column on mobile
-// محتوى البطل يستخدم شبكتين تتحول إلى عمود واحد على الشاشات الصغيرة
-const HeroContent = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 ${({ theme }) => theme.spacing.lg};
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: ${({ theme }) => theme.spacing['2xl']};
-  align-items: center;
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    grid-template-columns: 1fr;
-    text-align: center;
-    gap: ${({ theme }) => theme.spacing.xl};
-  }
-`;
-
-const HeroText = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.lg};
-`;
-
-const HeroTitle = styled.h1`
-  font-size: ${({ theme }) => theme.fonts.sizes['5xl']};
-  font-weight: ${({ theme }) => theme.fonts.weights.bold};
-  color: ${({ theme }) => theme.colors.text.primary};
-  line-height: 1.2;
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fonts.sizes['4xl']};
-  }
-`;
-
-const HeroSubtitle = styled.h2`
-  font-size: ${({ theme }) => theme.fonts.sizes['2xl']};
-  font-weight: ${({ theme }) => theme.fonts.weights.medium};
-  color: ${({ theme }) => theme.colors.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-`;
-
-const HeroDescription = styled.p`
-  font-size: ${({ theme }) => theme.fonts.sizes.lg};
-  color: ${({ theme }) => theme.colors.text.secondary};
-  line-height: 1.6;
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-`;
-
-// HeroButtons: Flex wrapper that stacks buttons vertically on phones
-// حاوية أزرار تتكدس عمودياً على الهواتف
-const HeroButtons = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    flex-direction: column;
-  }
-`;
-
-// HeroImage: Placeholder Unsplash image until CMS/gallery integration
-// صورة خلفية مؤقتة من Unsplash لحين ربطها بوسائط حقيقية
-const HeroImage = styled.div`
-  width: 100%;
-  height: 400px;
-  background-image: url('https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=600&h=400&fit=crop');
-  background-size: cover;
-  background-position: center;
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  box-shadow: 0 20px 40px ${({ theme }) => theme.colors.shadow.medium};
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    height: 300px;
-  }
-`;
-
-// Section: Shared wrapper for each content block (max-width + padding)
-// غلاف مشترك لكل قسم بمساحة داخلية وعرض ثابت
-const Section = styled.section`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 ${({ theme }) => theme.spacing.lg};
-  margin-bottom: ${({ theme }) => theme.spacing['3xl']};
-`;
-
-const SectionTitle = styled.h2`
-  font-size: ${({ theme }) => theme.fonts.sizes['2xl']};
-  font-weight: ${({ theme }) => theme.fonts.weights.semibold};
-  color: ${({ theme }) => theme.colors.text.primary};
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-`;
-
-const SectionDescription = styled.p`
-  font-size: ${({ theme }) => theme.fonts.sizes.base};
-  color: ${({ theme }) => theme.colors.text.secondary};
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
-// FeaturesGrid: Auto-fit layout for service highlights
-// شبكة تلقائية لعرض مميزات الخدمة
-const FeaturesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: ${({ theme }) => theme.spacing.xl};
-  margin-bottom: ${({ theme }) => theme.spacing['3xl']};
-`;
-
-const FeatureCard = styled(Card)`
-  text-align: center;
-  padding: ${({ theme }) => theme.spacing.xl};
-`;
-
-// FeatureIcon: Circular gradient backdrop to host each icon
-// أيقونة داخل دائرة متدرجة تضيف جاذبية بصرية
-const FeatureIcon = styled.div`
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary});
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto ${({ theme }) => theme.spacing.lg};
-  
-  svg {
-    font-size: ${({ theme }) => theme.fonts.sizes['2xl']};
-    color: ${({ theme }) => theme.colors.text.inverse};
-  }
-`;
-
-const FeatureTitle = styled.h3`
-  font-size: ${({ theme }) => theme.fonts.sizes.xl};
-  font-weight: ${({ theme }) => theme.fonts.weights.semibold};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-`;
-
-const FeatureDescription = styled.p`
-  color: ${({ theme }) => theme.colors.text.secondary};
-  line-height: 1.6;
-`;
-
-const ProductsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: ${({ theme }) => theme.spacing.xl};
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-`;
-
-const ViewAllButton = styled.div`
-  text-align: center;
-`;
-
-const CategoriesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: ${({ theme }) => theme.spacing.lg};
-`;
-
-const CategoryCard = styled(Card)`
-  text-align: center;
-  padding: ${({ theme }) => theme.spacing.xl};
-  cursor: pointer;
-  
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px ${({ theme }) => theme.colors.shadow.medium};
-  }
-`;
-
-const CategoryIcon = styled.div`
-  font-size: ${({ theme }) => theme.fonts.sizes['4xl']};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-`;
-
-const CategoryTitle = styled.h3`
-  font-size: ${({ theme }) => theme.fonts.sizes.xl};
-  font-weight: ${({ theme }) => theme.fonts.weights.semibold};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-`;
-
-const CategoryDescription = styled.p`
-  color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: ${({ theme }) => theme.fonts.sizes.sm};
-`;
-
+/**
+ * Home Component
+ * 
+ * يعرض الصفحة الرئيسية مع:
+ * - Hero Section
+ * - IdeaForm
+ * - Code Display
+ * - Features
+ * - How It Works
+ */
 const Home = () => {
-  // featuredProducts: Highlight newly tagged items (badge === 'new') limited to 4
-  // المنتجات المميزة: يتم اختيار أول أربعة عناصر بعلامة "جديد"
-  const featuredProducts = productsDatabase.filter(product => product.badge === 'new').slice(0, 4);
-  // bestSellers: Filters for bestseller badge to showcase top-performing SKUs
-  // الأكثر مبيعاً: المنتجات ذات شارة 'bestseller'
-  const bestSellers = productsDatabase.filter(product => product.badge === 'bestseller').slice(0, 4);
-  // saleProducts: Captures products with an oldPrice to spotlight discounts
-  // منتجات التخفيضات: أي عنصر لديه سعر قديم، مما يدل على وجود خصم
-  const saleProducts = productsDatabase.filter(product => product.oldPrice).slice(0, 4);
-  // usedProducts: Focus on refurbished/used inventory (category === 'used')
-  // منتجات مستعملة: فلترة الفئة 'used' وإظهار أربعة فقط
-  const usedProducts = productsDatabase.filter(product => product.category === 'used').slice(0, 4);
+  const { currentProject, generateProject, saveProject, shareProject, isGenerating } = useProject();
+  const [copied, setCopied] = useState(false);
 
-  // features array: Defines service benefits (icon, title, description)
-  // مصفوفة المزايا تحتوي على رمز وعنوان ووصف لكل ميزة
-  const features = [
-    {
-      icon: <FaShippingFast />,
-      title: 'شحن سريع',
-      description: 'توصيل مجاني للطلبات فوق 1000 جنيه في جميع أنحاء مصر'
-    },
-    {
-      icon: <FaShieldAlt />,
-      title: 'ضمان شامل',
-      description: 'ضمان على جميع المنتجات مع خدمة ما بعد البيع'
-    },
-    {
-      icon: <FaHeadset />,
-      title: 'دعم فني',
-      description: 'فريق دعم فني متخصص متاح 24/7 لمساعدتك'
-    },
-    {
-      icon: <FaTrophy />,
-      title: 'جودة عالية',
-      description: 'منتجات أصلية من أفضل الماركات العالمية'
+  /**
+   * handleGenerate - معالجة توليد الكود
+   */
+  const handleGenerate = async (formData) => {
+    try {
+      await generateProject(
+        formData.idea,
+        formData.language,
+        formData.provider,
+        formData.apiKey,
+        formData.options
+      );
+    } catch (error) {
+      alert('خطأ في توليد الكود: ' + error.message);
     }
-  ];
+  };
 
-  // categories array: Maps category cards to router links with emojis for now
-  // مصفوفة الفئات: تحدد كل فئة ورابطها باستخدام createLink لاحقاً
-  const categories = [
-    {
-      title: 'قطع الكمبيوتر',
-      description: 'معالجات، كروت شاشة، ذاكرة',
-      icon: '💻',
-      link: '/shop?category=pc-parts'
-    },
-    {
-      title: 'اللابتوب',
-      description: 'أجهزة للألعاب والعمل',
-      icon: '💻',
-      link: '/shop?category=laptops'
-    },
-    {
-      title: 'الاكسسوارات',
-      description: 'لوحات مفاتيح، فئران، سماعات',
-      icon: '⌨️',
-      link: '/shop?category=accessories'
+  /**
+   * handleSave - معالجة حفظ المشروع
+   */
+  const handleSave = () => {
+    if (currentProject) {
+      saveProject(currentProject);
+      alert('تم حفظ المشروع بنجاح!');
     }
-  ];
+  };
+
+  /**
+   * handleDownload - معالجة تحميل المشروع كـ ZIP
+   */
+  const handleDownload = async () => {
+    if (currentProject) {
+      try {
+        await generateZip(currentProject);
+      } catch (error) {
+        alert('فشل تحميل المشروع: ' + error.message);
+      }
+    }
+  };
+
+  /**
+   * handleShare - معالجة مشاركة المشروع
+   */
+  const handleShare = () => {
+    if (currentProject) {
+      try {
+        shareProject(currentProject.id);
+        alert('تم نسخ رابط المشاركة!');
+      } catch (error) {
+        alert('فشل مشاركة المشروع: ' + error.message);
+      }
+    }
+  };
+
+  /**
+   * handleCopy - نسخ الكود للحافظة
+   */
+  const handleCopy = async () => {
+    if (currentProject?.code) {
+      try {
+        await navigator.clipboard.writeText(currentProject.code);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (error) {
+        alert('فشل نسخ الكود');
+      }
+    }
+  };
 
   return (
-    <>
-      <HomeSEO />
-      <HomeContainer>
-      {/* Hero Section */}
-      <HeroSection>
-        <HeroContent>
-          <HeroText>
-            <HeroTitle>أحدث قطع الكمبيوتر</HeroTitle>
-            <HeroSubtitle>بأفضل الأسعار في السوق</HeroSubtitle>
-            <HeroDescription>
-              اكتشف مجموعتنا الواسعة من قطع الكمبيوتر عالية الجودة واللابتوب والاكسسوارات. 
-              نوفر لك أحدث التقنيات بأسعار تنافسية مع ضمان شامل وخدمة عملاء متميزة.
-            </HeroDescription>
-            <HeroButtons>
-              {/* createLink ensures correct base path for static hosting */}
-              {/* createLink يضمن سلامة الروابط مع الاستضافة الثابتة */}
-              <Button as="a" href={createLink('/shop')} variant="primary" size="lg">
-                تسوق الآن
-                <FaArrowLeft />
-              </Button>
-              <Button as="a" href={createLink('/shop?deals=true')} variant="secondary" size="lg">
-                العروض الخاصة
-              </Button>
-            </HeroButtons>
-          </HeroText>
-          <HeroImage />
-        </HeroContent>
-      </HeroSection>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Hero Section - قسم البطل */}
+      <section className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-4">
+              حوّل أفكارك إلى أكواد برمجية 🚀
+            </h1>
+            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+              منصة ذكية لتوليد الأكواد والتطبيقات باستخدام الذكاء الاصطناعي
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 text-2xl">
+              <span>⚛️ React</span>
+              <span>💚 Vue</span>
+              <span>🐍 Python</span>
+              <span>☕ Java</span>
+              <span>🟢 Node.js</span>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
-      {/* Features Section */}
-      <Section>
-        <SectionTitle>لماذا تختار Y0 Hardware؟</SectionTitle>
-        <FeaturesGrid>
-          {features.map((feature, index) => (
-            <FeatureCard key={index}>
-              <FeatureIcon>{feature.icon}</FeatureIcon>
-              <FeatureTitle>{feature.title}</FeatureTitle>
-              <FeatureDescription>{feature.description}</FeatureDescription>
-            </FeatureCard>
-          ))}
-        </FeaturesGrid>
-      </Section>
+      {/* Main Content - المحتوى الرئيسي */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Column - IdeaForm - العمود الأيسر */}
+          <div>
+            <IdeaForm onGenerate={handleGenerate} />
+          </div>
 
-      {/* Best Sellers Section */}
-      <Section>
-        <SectionTitle>الأكثر مبيعاً</SectionTitle>
-        <ProductsGrid>
-          {bestSellers.map(product => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </ProductsGrid>
-      </Section>
+          {/* Right Column - Code Display - العمود الأيمن */}
+          <div>
+            {currentProject ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6"
+              >
+                {/* Project Info - معلومات المشروع */}
+                <div className="mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    {currentProject.name}
+                  </h2>
+                  <div className="flex items-center space-x-4 rtl:space-x-reverse text-sm text-gray-600 dark:text-gray-400">
+                    <span>📅 {new Date(currentProject.createdAt).toLocaleDateString('ar-EG')}</span>
+                    <span>🔧 {currentProject.language}</span>
+                    <span>🤖 {currentProject.provider}</span>
+                  </div>
+                </div>
 
-      {/* Featured Products Section */}
-      <Section>
-        <SectionTitle>المنتجات المميزة</SectionTitle>
-        <ProductsGrid>
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </ProductsGrid>
-        <ViewAllButton>
-          <Button as="a" href={createLink('/shop')} variant="primary" size="lg">
-            عرض جميع المنتجات
-            <FaArrowLeft />
-          </Button>
-        </ViewAllButton>
-      </Section>
+                {/* Code Editor - محرر الأكواد */}
+                <div className="mb-4">
+                  <CodeEditor
+                    code={currentProject.code}
+                    language={currentProject.language}
+                    onChange={(code) => {
+                      saveProject({ ...currentProject, code });
+                    }}
+                  />
+                </div>
 
-      {/* Used Products Section */}
-      <Section>
-        <SectionTitle>منتجات مستعملة بحالة ممتازة</SectionTitle>
-        <SectionDescription>
-          منتجات مستعملة مفحوصة ومضمونة بأسعار مناسبة - وفر حتى 50%
-        </SectionDescription>
-        <ProductsGrid>
-          {usedProducts.map(product => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </ProductsGrid>
-        <ViewAllButton>
-          <Button as="a" href={createLink('/shop?category=used')} variant="secondary" size="lg">
-            عرض جميع المنتجات المستعملة
-            <FaArrowLeft />
-          </Button>
-        </ViewAllButton>
-      </Section>
+                {/* Actions - الإجراءات */}
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={handleSave}
+                    className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center space-x-2 rtl:space-x-reverse"
+                  >
+                    <FiSave className="w-4 h-4" />
+                    <span>حفظ المشروع</span>
+                  </button>
+                  <button
+                    onClick={handleCopy}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                    title="نسخ الكود"
+                  >
+                    {copied ? <FiCheck className="w-4 h-4" /> : <FiCopy className="w-4 h-4" />}
+                  </button>
+                  <button
+                    onClick={handleDownload}
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+                    title="تحميل ZIP"
+                  >
+                    <FiDownload className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={handleShare}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors"
+                    title="مشاركة"
+                  >
+                    <FiShare2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-12 text-center">
+                <div className="text-6xl mb-4">💡</div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  ابدأ بإنشاء مشروعك
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  أدخل فكرتك البرمجية في النموذج واختر اللغة و AI Provider
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
 
-      {/* Categories Section */}
-      <Section>
-        <SectionTitle>تسوق حسب الفئة</SectionTitle>
-        <CategoriesGrid>
-          {categories.map((category, index) => (
-            <CategoryCard key={index} as="a" href={createLink(category.link)} hoverable>
-              <CategoryIcon>{category.icon}</CategoryIcon>
-              <CategoryTitle>{category.title}</CategoryTitle>
-              <CategoryDescription>{category.description}</CategoryDescription>
-            </CategoryCard>
-          ))}
-        </CategoriesGrid>
-      </Section>
+        {/* Features Section - قسم المميزات */}
+        <section className="mt-16">
+          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-8">
+            المميزات الرئيسية
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: '🤖',
+                title: 'دعم متعدد لـ AI',
+                description: 'OpenAI, Claude, Gemini'
+              },
+              {
+                icon: '🌐',
+                title: 'لغات برمجة متنوعة',
+                description: 'React, Vue, Python, Java, وغيرها'
+              },
+              {
+                icon: '✏️',
+                title: 'محرر أكواد متقدم',
+                description: 'تمييز الأكواد وتعديل مباشر'
+              },
+              {
+                icon: '📦',
+                title: 'تحميل ومشاركة',
+                description: 'حمل ZIP أو شارك المشروع'
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center"
+              >
+                <div className="text-4xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </section>
 
-      {/* AI Recommendations Section - Integrates ML-powered product suggestions */}
-      {/* قسم التوصيات المدعوم بالذكاء الاصطناعي */}
-      <AIRecommendations />
-
-      {/* AI Chatbot - Conversational helper for quick support */}
-      {/* روبوت المحادثة لتقديم الدعم الفوري */}
-      <AIChatbot />
-    </HomeContainer>
-    </>
+        {/* How It Works Section - قسم كيفية العمل */}
+        <section className="mt-16">
+          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-8">
+            كيف يعمل؟
+          </h2>
+          <div className="max-w-4xl mx-auto">
+            {[
+              { step: 1, title: 'اختر AI Provider', description: 'اختر مزود AI وأدخل API Key' },
+              { step: 2, title: 'اكتب فكرتك', description: 'صِف الفكرة البرمجية التي تريدها' },
+              { step: 3, title: 'اختر اللغة', description: 'اختر لغة البرمجة أو اتركها تلقائية' },
+              { step: 4, title: 'اضغط توليد', description: 'انتظر قليلاً وسيتم توليد الكود' },
+              { step: 5, title: 'عدل وحمل', description: 'عدل الكود واحفظه أو حمله كـ ZIP' }
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="flex items-start mb-6"
+              >
+                <div className="flex-shrink-0 w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg">
+                  {item.step}
+                </div>
+                <div className="mr-4">
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {item.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
   );
 };
 

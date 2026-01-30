@@ -1,92 +1,76 @@
 /**
- * Y0 Hardware v2.0.0 - Main Application Component
+ * Y0 AI Code Generator - المكون الرئيسي للتطبيق
+ * --------------------------------------------------------------
+ * Purpose (الغرض): إعداد البنية الأساسية للتطبيق بالكامل
  * 
- * This is the root component that sets up the entire application structure:
- * - Theme management (light/dark mode)
- * - Global state management (cart, wishlist, notifications)
- * - Routing configuration
- * - Error boundaries for graceful error handling
- * - Analytics tracking
+ * البنية:
+ * - BrowserRouter: للتنقل بين الصفحات
+ * - ThemeProvider: لإدارة الثيم (الوضع الليلي/النهاري) في كل التطبيق
+ * - ProjectProvider: لإدارة المشاريع والحالة العامة
+ * - Header: شريط التنقل العلوي
+ * - Main: المحتوى الرئيسي مع الصفحات
+ * - Footer: التذييل السفلي
+ * 
+ * التخطيط:
+ * - flex flex-col min-h-screen: يضمن أن التطبيق يأخذ ارتفاع الشاشة كاملاً
+ * - flex-1 على main: يجعل المحتوى يتمدد ويدفع Footer للأسفل
  * 
  * @author Y0ussefMahmoud
- * @version 2.0.0
+ * @version 1.0.0
  */
 
 import React from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import styled from 'styled-components';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
-import { CartProvider } from './context/CartContext';
-import { NotificationProvider } from './context/NotificationContext';
-import { WishlistProvider } from './context/WishlistContext';
-import { GlobalStyles } from './styles/GlobalStyles';
-import Header from './components/common/Header';
-import Footer from './components/common/Footer';
-import ErrorBoundary from './components/common/ErrorBoundary';
-import Analytics from './components/common/Analytics';
+import { ProjectProvider } from './context/ProjectContext';
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
 import Home from './pages/Home';
-import Shop from './pages/Shop';
-import Cart from './pages/Cart';
-import ProductDetails from './pages/ProductDetails';
+import Projects from './pages/Projects';
 import About from './pages/About';
-import Contact from './pages/Contact';
-import Wishlist from './pages/Wishlist';
-
-// Styled Components
-const AppContainer = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-`;
-
-const MainContent = styled.main`
-  flex: 1;
-`;
 
 /**
- * Main App Component
+ * Main App Component - المكون الرئيسي
  * 
- * Renders the complete application with all providers and routing.
- * The component hierarchy ensures proper context availability:
- * 1. ThemeProvider - Theme and dark mode management
- * 2. CartProvider - Shopping cart state
- * 3. WishlistProvider - Wishlist/favorites state  
- * 4. NotificationProvider - Toast notifications
- * 5. ErrorBoundary - Error handling
- * 6. Router - Navigation and routing
- * 7. Analytics - User behavior tracking
+ * يعرض التطبيق الكامل مع جميع Providers والتنقل.
+ * 
+ * التسلسل الهرمي للمكونات يضمن توفر Context بشكل صحيح:
+ * 1. ThemeProvider - إدارة الثيم والوضع الليلي/النهاري
+ *    يوفر theme state و toggleTheme function لجميع المكونات
+ * 2. ProjectProvider - إدارة حالة المشاريع
+ *    يوفر projects, currentProject, isGenerating, generateProject, saveProject, etc.
+ * 3. BrowserRouter - التنقل والتوجيه بين الصفحات
+ * 4. Header - شريط التنقل العلوي مع قائمة التنقل وزر تبديل الثيم
+ * 5. Main - المحتوى الرئيسي مع Routes للصفحات
+ * 6. Footer - التذييل السفلي مع معلومات المشروع وروابط التواصل
  */
 function App() {
   return (
-    <ThemeProvider>
-      <CartProvider>
-        <WishlistProvider>
-          <NotificationProvider>
-          <ErrorBoundary>
-            <GlobalStyles />
-            <Router>
-              <Analytics />
-            <AppContainer>
-              <Header />
-              <MainContent>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/shop" element={<Shop />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/wishlist" element={<Wishlist />} />
-                  <Route path="/product/:id" element={<ProductDetails />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
-                </Routes>
-              </MainContent>
-              <Footer />
-            </AppContainer>
-            </Router>
-          </ErrorBoundary>
-          </NotificationProvider>
-        </WishlistProvider>
-      </CartProvider>
-    </ThemeProvider>
+    <BrowserRouter>
+      {/* ThemeProvider: يوفر theme state (dark/light) لجميع المكونات */}
+      <ThemeProvider>
+        {/* ProjectProvider: يوفر project management state (projects, currentProject, isGenerating) لجميع المكونات */}
+        <ProjectProvider>
+          {/* Container: div رئيسي مع flexbox layout لضمان أن Footer دائماً في الأسفل */}
+          <div className="app-container flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+            {/* Header: شريط التنقل العلوي - sticky في الأعلى */}
+            <Header />
+            
+            {/* Main: المحتوى الرئيسي - flex-1 يجعله يتمدد ويدفع Footer للأسفل */}
+            <main className="flex-1 container mx-auto px-4 py-8">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/projects" element={<Projects />} />
+                <Route path="/about" element={<About />} />
+              </Routes>
+            </main>
+            
+            {/* Footer: التذييل السفلي - دائماً في الأسفل بفضل flex layout */}
+            <Footer />
+          </div>
+        </ProjectProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }
 
